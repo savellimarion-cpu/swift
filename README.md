@@ -217,8 +217,13 @@ fonctionne très bien en production pour un usage agence/petite équipe).
 
 1. Récupère la chaîne de connexion fournie par Neon/Supabase.
 2. Renseigne-la comme `DATABASE_URL` côté Vercel (étape suivante).
-3. Si tu pars d'une base vide, applique le schéma une fois : `npx prisma db
-   push` (avec `DATABASE_URL` pointant vers cette base, depuis ton poste).
+3. Pas besoin de lancer `prisma db push` toi-même : le script `build`
+   (`package.json`) l'exécute automatiquement à chaque déploiement, donc les
+   tables sont créées/synchronisées dès le premier build sur Vercel.
+   > Pour un changement de schéma plus tard qui supprimerait des données
+   > (colonne renommée/supprimée), `prisma db push` s'arrêtera par sécurité —
+   > il faudra alors l'exécuter une fois depuis ton poste avec
+   > `--accept-data-loss` pour confirmer.
 
 ### Hébergement de l'application : Vercel
 
