@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, type AgentType } from "@/lib/agents";
 
-const AGENCY_NAME = "360.marketing";
-const CONTACT_EMAIL = "contact@360.marketing";
+const AGENCY_NAME = "Swiftflow";
+const CONTACT_EMAIL = "contact@swiftflow.agency";
 
 const CLIENT_PITCH: Record<AgentType, string> = {
   strategiste:
@@ -35,7 +35,7 @@ function Header() {
     <header className="border-b border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         <span className="font-mono text-sm font-semibold tracking-tight">
-          360<span className="text-ochre">.</span>marketing
+          Swiftflow<span className="text-ochre">.</span>
         </span>
         <nav className="flex items-center gap-5 text-sm">
           <a href="#agents" className="hidden sm:inline text-ink/60 hover:text-ink">
@@ -289,7 +289,7 @@ function Footer() {
     <footer className="border-t border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-ink/40">
         <span className="font-mono">
-          360<span className="text-ochre">.</span>marketing
+          Swiftflow<span className="text-ochre">.</span>
         </span>
         <Link href="/login" className="font-mono text-xs text-ink/30 hover:text-ink/60">
           Espace agence →

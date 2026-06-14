@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getAgentMeta, enabledAgentIds } from "@/lib/agents";
 import AgentPersonaPanel from "@/components/portal/AgentPersonaPanel";
 import AgentTabNav from "@/components/portal/AgentTabNav";
+import AgentSwitcher from "@/components/portal/AgentSwitcher";
 
 export default async function AgentWorkspaceLayout({
   children,
@@ -43,6 +44,9 @@ export default async function AgentWorkspaceLayout({
           <Link href={`/portal/${token}`} className="font-mono text-xs text-ink/40 hover:text-ink/70">
             ← {client.name}
           </Link>
+        </div>
+        <div className="max-w-5xl mx-auto px-6 md:px-10 pb-3">
+          <AgentSwitcher token={token} currentAgentId={agent.id} enabledAgents={client.enabledAgents} />
         </div>
       </header>
 

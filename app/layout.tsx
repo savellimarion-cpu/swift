@@ -10,9 +10,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "360.marketing — votre équipe de créateurs IA",
+  title: "Swiftflow — votre équipe de créateurs IA",
   description:
-    "Posts, carrousels, visuels, rapports et présentations — une équipe d'agents IA dédiée à votre marque, configurée et supervisée par 360.marketing.",
+    "Posts, carrousels, visuels, rapports et présentations — une équipe d'agents IA dédiée à votre marque, configurée et supervisée par Swiftflow.",
 };
 
 export default function RootLayout({

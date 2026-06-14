@@ -132,18 +132,18 @@ fois déployé.
 
 ## 4. Page d'accueil & offres
 
-La page `/` (racine du site) n'est plus une page marketing pour
-"Swiftflow" — c'est **votre tunnel de vente**, adressé à vos clients (les
-clients de votre agence). Elle présente les 5 agents et deux formules :
+La page `/` (racine du site) est **votre tunnel de vente**, adressé à vos
+clients (les clients de votre agence Swiftflow — swiftflow.agency). Elle
+présente les 5 agents et deux formules :
 
 - **Essentiel — 59 €/mois** : le client choisit 1 ou 2 agents.
 - **Premium — 199 €/mois** : accès aux 5 agents.
 
 Les boutons "Demander cette offre" ouvrent un email pré-rempli vers
-`CONTACT_EMAIL` (constante en haut de `app/page.tsx`) — il n'y a pas encore
-de paiement en ligne (Stripe), voir Roadmap. Le nom affiché ("360.marketing")
-est une constante `AGENCY_NAME` dans le même fichier — change ces deux
-constantes pour les adapter à ton agence.
+`CONTACT_EMAIL` (constante en haut de `app/page.tsx`, actuellement
+`contact@swiftflow.agency`) — il n'y a pas encore de paiement en ligne
+(Stripe), voir Roadmap. Le nom affiché ("Swiftflow") est une constante
+`AGENCY_NAME` dans le même fichier.
 
 ### Activer/désactiver des agents par client
 
@@ -155,6 +155,9 @@ renseigné = tous activés, pour rester compatible avec les clients existants).
 
 Effet côté portail client :
 - Le hub (`/portal/{token}`) n'affiche que les agents activés.
+- Dans l'espace de chaque agent, un petit menu en haut de page (juste sous
+  le logo) permet de passer directement à un autre agent activé — sans
+  repasser par le hub.
 - Ouvrir directement l'URL d'un agent désactivé renvoie une page 404.
 - Envoyer un message à un agent désactivé (chat) renvoie une erreur.
 
@@ -322,3 +325,9 @@ fonctionne très bien en production pour un usage agence/petite équipe).
 - **Historique structuré** : actuellement un champ texte libre ; pourrait
   devenir un modèle dédié (campagnes, métriques baseline) si tu veux des
   graphiques d'évolution.
+- **Agents supplémentaires** (5 → 8) : si tu veux te rapprocher du guide à
+  9 agents (1 chef d'orchestre + 8 spécialistes), les nouveaux rôles
+  (assistant email, analyste de calls, recrutement...) s'ajoutent dans
+  `lib/agents/index.ts` (`AGENTS`) + un module `lib/agents/<id>.ts` par
+  agent — la structure (espace, onglets, accès par client) s'applique sans
+  changement.
