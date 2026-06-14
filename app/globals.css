@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color: #F7F4EE;
+  background-color: #FAFAFC;
 }
 
 /* --- Rendu markdown des livrables ----------------------------------- */
@@ -17,19 +17,19 @@ body {
 .markdown-body h2,
 .markdown-body h3 {
   font-weight: 700;
-  color: #21241F;
+  color: #08080F;
   margin-top: 1.4em;
   margin-bottom: 0.5em;
   line-height: 1.25;
 }
-.markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #E1DBCC; padding-bottom: 0.3em; }
+.markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #E4E4ED; padding-bottom: 0.3em; }
 .markdown-body h2 { font-size: 1.25rem; }
 .markdown-body h3 { font-size: 1.05rem; }
 
 .markdown-body p,
 .markdown-body li {
   line-height: 1.7;
-  color: #2E332C;
+  color: #1C1C26;
 }
 .markdown-body p { margin-bottom: 0.9em; }
 
@@ -37,21 +37,21 @@ body {
 .markdown-body ol { margin: 0.5em 0 1em 1.4em; }
 .markdown-body ul { list-style: disc; }
 .markdown-body ol { list-style: decimal; }
-.markdown-body strong { color: #21241F; }
+.markdown-body strong { color: #08080F; }
 
 .markdown-body blockquote {
-  border-left: 3px solid #B5793A;
+  border-left: 3px solid #00E5D4;
   padding: 0.4em 1em;
   margin: 1em 0;
-  background: #FBF8F1;
-  color: #5A5447;
+  background: #E6FBF9;
+  color: #4A4A55;
   font-size: 0.92rem;
 }
 
 .markdown-body code {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  background: #EFEAE0;
+  background: #EFEFF5;
   padding: 0.15em 0.35em;
   border-radius: 3px;
 }
@@ -59,8 +59,8 @@ body {
 .markdown-body pre {
   font-family: var(--font-mono);
   font-size: 0.85em;
-  background: #21241F;
-  color: #F7F4EE;
+  background: #08080F;
+  color: #FAFAFC;
   padding: 1em;
   border-radius: 6px;
   overflow-x: auto;
@@ -70,10 +70,10 @@ body {
 
 .markdown-body table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.92rem; }
 .markdown-body th,
-.markdown-body td { border: 1px solid #E1DBCC; padding: 0.45em 0.7em; text-align: left; }
-.markdown-body th { background: #EFEAE0; font-weight: 600; }
+.markdown-body td { border: 1px solid #E4E4ED; padding: 0.45em 0.7em; text-align: left; }
+.markdown-body th { background: #EFEFF5; font-weight: 600; }
 
-.markdown-body hr { border: none; border-top: 1px solid #E1DBCC; margin: 1.6em 0; }
+.markdown-body hr { border: none; border-top: 1px solid #E4E4ED; margin: 1.6em 0; }
 
 /* --- Impression (export PDF des decks via le navigateur) ------------- */
 

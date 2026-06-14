@@ -7,7 +7,7 @@ import { updateDeliverableStatusAction } from "@/app/actions/deliverables";
 const STATUSES = ["brouillon", "validé", "publié"];
 
 const STATUS_STYLES: Record<string, string> = {
-  brouillon: "bg-ochre/15 text-ochre border-ochre/40",
+  brouillon: "bg-turquoise/15 text-turquoise border-turquoise/40",
   "validé": "bg-forest/15 text-forest border-forest/40",
   "publié": "bg-steel/15 text-steel border-steel/40",
 };

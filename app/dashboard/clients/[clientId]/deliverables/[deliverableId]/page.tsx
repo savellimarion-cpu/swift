@@ -31,7 +31,7 @@ export default async function DeliverablePage({
         </Link>
       </div>
 
-      <div className="mb-1 font-mono text-xs uppercase tracking-widest text-ochre">
+      <div className="mb-1 font-mono text-xs uppercase tracking-widest text-turquoise">
         {agent?.label ?? deliverable.agent}
       </div>
       <h1 className="text-2xl font-semibold mb-6">{deliverable.title}</h1>

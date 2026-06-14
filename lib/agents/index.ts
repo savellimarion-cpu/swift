@@ -40,7 +40,7 @@ export interface AgentMeta {
   /** Phrase courte affichée sur la fiche de l'agent. */
   tagline: string;
   model: "Opus" | "Sonnet";
-  accent: "ochre" | "forest" | "steel" | "clay";
+  accent: "turquoise" | "violet" | "pink";
   icon: LucideIcon;
   outputTab: AgentOutputTab;
   /** Exemples de demandes affichés sur l'onglet Chat. */
@@ -55,7 +55,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Stratège",
     tagline: "Brief de campagne, positionnement & ICP.",
     model: "Opus",
-    accent: "clay",
+    accent: "turquoise",
     icon: Compass,
     outputTab: { slug: "briefs", label: "Briefs", icon: Target },
     suggestions: [
@@ -71,7 +71,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Créateur de Contenu",
     tagline: "Posts Instagram, carrousels, scripts Reels, emails.",
     model: "Sonnet",
-    accent: "ochre",
+    accent: "violet",
     icon: Feather,
     outputTab: { slug: "posts", label: "Posts & carrousels", icon: LayoutGrid },
     suggestions: [
@@ -87,7 +87,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Designer",
     tagline: "Prompts images prêts à l'emploi pour vos visuels.",
     model: "Sonnet",
-    accent: "steel",
+    accent: "pink",
     icon: Palette,
     outputTab: { slug: "visuels", label: "Visuels", icon: ImageIcon },
     suggestions: [
@@ -103,7 +103,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Analyste",
     tagline: "Lecture des chiffres & plan d'optimisation à 30 jours.",
     model: "Opus",
-    accent: "forest",
+    accent: "turquoise",
     icon: TrendingUp,
     outputTab: { slug: "rapports", label: "Rapports", icon: FileBarChart },
     suggestions: [
@@ -119,7 +119,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Présentateur",
     tagline: "Decks de restitution, prêts à présenter.",
     model: "Sonnet",
-    accent: "clay",
+    accent: "violet",
     icon: Presentation,
     outputTab: { slug: "decks", label: "Decks", icon: Layers },
     suggestions: [
@@ -186,29 +186,25 @@ export function workspaceTabs(agent: AgentMeta) {
 
 /** Tailwind JIT a besoin des classes complètes dans le code source. */
 export const ACCENT_BG: Record<AgentMeta["accent"], string> = {
-  ochre: "bg-ochre",
-  forest: "bg-forest",
-  steel: "bg-steel",
-  clay: "bg-clay",
+  turquoise: "bg-turquoise",
+  violet: "bg-violet-500",
+  pink: "bg-pink-500",
 };
 
 export const ACCENT_TEXT: Record<AgentMeta["accent"], string> = {
-  ochre: "text-ochre",
-  forest: "text-forest",
-  steel: "text-steel",
-  clay: "text-clay",
+  turquoise: "text-turquoise",
+  violet: "text-violet-500",
+  pink: "text-pink-500",
 };
 
 export const ACCENT_BORDER: Record<AgentMeta["accent"], string> = {
-  ochre: "border-ochre",
-  forest: "border-forest",
-  steel: "border-steel",
-  clay: "border-clay",
+  turquoise: "border-turquoise",
+  violet: "border-violet-500",
+  pink: "border-pink-500",
 };
 
 export const ACCENT_SOFT_BG: Record<AgentMeta["accent"], string> = {
-  ochre: "bg-ochre/10",
-  forest: "bg-forest/10",
-  steel: "bg-steel/10",
-  clay: "bg-clay/10",
+  turquoise: "bg-turquoise/10",
+  violet: "bg-violet-500/10",
+  pink: "bg-pink-500/10",
 };

@@ -17,7 +17,7 @@ export default function Sidebar({
     <aside className="w-64 shrink-0 border-r border-line bg-paper px-5 py-6 hidden md:flex md:flex-col gap-6">
       <div>
         <Link href="/dashboard" className="block">
-          <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-1">
+          <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-1">
             Swiftflow<span className="text-ink/40">.</span> multi-agent marketing
           </div>
           <div className="font-semibold text-ink leading-tight truncate">{accountName}</div>
@@ -29,7 +29,7 @@ export default function Sidebar({
           <span className="font-mono text-[11px] uppercase tracking-widest text-ink/40">
             Clients
           </span>
-          <Link href="/dashboard" className="font-mono text-[11px] text-ochre hover:underline">
+          <Link href="/dashboard" className="font-mono text-[11px] text-turquoise hover:underline">
             + nouveau
           </Link>
         </div>

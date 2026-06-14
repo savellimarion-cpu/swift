@@ -47,7 +47,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
               rows={2}
               required
               placeholder="ex. Remplir le pipeline de rendez-vous découverte pour la saison printemps"
-              className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+              className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
             />
           </div>
         )}
@@ -62,7 +62,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
                 id="format"
                 name="format"
                 required
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               >
                 {CONTENT_FORMATS.map((f) => (
                   <option key={f.value} value={f.value}>
@@ -80,7 +80,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
                 name="angle"
                 type="text"
                 placeholder="Laisse vide pour utiliser l'angle du brief le plus récent"
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               />
             </div>
           </>
@@ -106,7 +106,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
                 type="text"
                 required
                 placeholder="ex. 2026-06"
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               />
             </div>
             <div>
@@ -118,7 +118,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
                 name="donnees"
                 rows={4}
                 placeholder={"ex.\nInstagram — taux d'engagement : 3,5%\nInstagram — saves/post : 52\nLinkedIn — pas encore publié"}
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               />
               <p className="text-xs text-ink/40 mt-1">
                 Laisse vide les métriques que tu n&apos;as pas — l&apos;Analyste
@@ -140,7 +140,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
                 type="text"
                 required
                 placeholder="ex. Restitution campagne lancement printemps"
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               />
             </div>
             <div>
@@ -150,7 +150,7 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
               <select
                 id="structure"
                 name="structure"
-                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+                className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
               >
                 {DECK_STRUCTURES.map((s) => (
                   <option key={s.value} value={s.value}>

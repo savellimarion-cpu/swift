@@ -21,7 +21,7 @@ export default function NewClientForm() {
           type="text"
           required
           placeholder="ex. Studio Lumen"
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
       <SubmitButton pendingLabel="Création…">Ajouter le client</SubmitButton>

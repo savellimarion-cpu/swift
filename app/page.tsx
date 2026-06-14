@@ -35,7 +35,7 @@ function Header() {
     <header className="border-b border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         <span className="font-mono text-sm font-semibold tracking-tight">
-          Swiftflow<span className="text-ochre">.</span>
+          Swiftflow<span className="text-turquoise">.</span>
         </span>
         <nav className="flex items-center gap-5 text-sm">
           <a href="#agents" className="hidden sm:inline text-ink/60 hover:text-ink">
@@ -60,7 +60,7 @@ function Hero() {
   return (
     <section className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
       <div>
-        <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-4">
+        <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-4">
           {AGENCY_NAME} · agents IA dédiés à votre marque
         </div>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight mb-5">
@@ -120,7 +120,7 @@ function HeroPreview() {
 
       <div className="pt-3 border-t border-line flex items-center justify-between font-mono text-[11px] text-ink/40">
         <span>carrousel-collection-printemps</span>
-        <span className="border border-ochre/40 text-ochre rounded-sm px-1.5 py-0.5">brouillon</span>
+        <span className="border border-turquoise/40 text-turquoise rounded-sm px-1.5 py-0.5">brouillon</span>
       </div>
     </div>
   );
@@ -190,7 +190,7 @@ function HowItWorks() {
       <div className="grid md:grid-cols-3 gap-8 mt-8">
         {steps.map((step, i) => (
           <div key={step.title}>
-            <div className="font-mono text-2xl text-ochre mb-3">
+            <div className="font-mono text-2xl text-turquoise mb-3">
               {String(i + 1).padStart(2, "0")}
             </div>
             <h3 className="font-semibold mb-2">{step.title}</h3>
@@ -246,8 +246,8 @@ function Pricing() {
           </a>
         </div>
 
-        <div className="bg-white border-2 border-ochre rounded-sm p-6 md:p-8">
-          <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-2">
+        <div className="bg-white border-2 border-turquoise rounded-sm p-6 md:p-8">
+          <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
             Premium
           </div>
           <div className="flex items-baseline gap-1 mb-4">
@@ -275,7 +275,7 @@ function Pricing() {
 
       <p className="text-sm text-ink/40 mt-6">
         Une question avant de vous lancer ? Écrivez-nous à{" "}
-        <a href={`mailto:${CONTACT_EMAIL}`} className="text-ochre hover:underline">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="text-turquoise hover:underline">
           {CONTACT_EMAIL}
         </a>
         .
@@ -289,7 +289,7 @@ function Footer() {
     <footer className="border-t border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-ink/40">
         <span className="font-mono">
-          Swiftflow<span className="text-ochre">.</span>
+          Swiftflow<span className="text-turquoise">.</span>
         </span>
         <Link href="/login" className="font-mono text-xs text-ink/30 hover:text-ink/60">
           Espace agence →

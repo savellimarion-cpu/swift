@@ -39,7 +39,7 @@ export default async function AgentWorkspaceLayout({
       <header className="border-b border-line no-print">
         <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-ochre">.</span>
+            Swiftflow<span className="text-turquoise">.</span>
           </span>
           <Link href={`/portal/${token}`} className="font-mono text-xs text-ink/40 hover:text-ink/70">
             ← {client.name}

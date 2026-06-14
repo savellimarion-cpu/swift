@@ -31,7 +31,7 @@ export default function DeckView({
         </p>
         <button
           onClick={() => window.print()}
-          className="font-mono text-xs uppercase tracking-wide border border-ochre text-ochre px-3 py-1.5 rounded-sm hover:bg-ochre/10 transition-colors"
+          className="font-mono text-xs uppercase tracking-wide border border-turquoise text-turquoise px-3 py-1.5 rounded-sm hover:bg-turquoise/10 transition-colors"
         >
           Imprimer / exporter en PDF
         </button>
@@ -39,7 +39,7 @@ export default function DeckView({
 
       <div className="space-y-4">
         <div className="deck-slide bg-white border border-line rounded-sm p-8 md:p-10 flex flex-col items-center justify-center text-center min-h-[280px]">
-          <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-3">
+          <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-3">
             Deck
           </div>
           <h1 className="text-2xl font-semibold">{title}</h1>
@@ -50,7 +50,7 @@ export default function DeckView({
             key={slide.number}
             className="deck-slide bg-white border border-line rounded-sm p-8 md:p-10 min-h-[280px] flex flex-col justify-center"
           >
-            <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-2">
+            <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
               Slide {slide.number}
             </div>
             <h2 className="text-xl font-semibold mb-4">{slide.title}</h2>

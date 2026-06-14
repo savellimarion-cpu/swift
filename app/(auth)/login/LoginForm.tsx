@@ -21,7 +21,7 @@ export default function LoginForm() {
           name="email"
           type="email"
           required
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
       <div>
@@ -33,7 +33,7 @@ export default function LoginForm() {
           name="password"
           type="password"
           required
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
 
@@ -45,7 +45,7 @@ export default function LoginForm() {
 
       <p className="text-sm text-ink/50 text-center">
         Pas encore de compte ?{" "}
-        <Link href="/register" className="text-ochre hover:underline">
+        <Link href="/register" className="text-turquoise hover:underline">
           Créer un espace
         </Link>
       </p>

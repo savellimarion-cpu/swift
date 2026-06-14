@@ -37,7 +37,7 @@ export default function HistoriqueTab({
             <div className="text-sm text-ink">
               <span className="font-medium">{agentName}</span>{" "}
               {d.kind === "chat" ? "a répondu à une demande" : "a produit"} —{" "}
-              <Link href={`/portal/${token}/${d.id}`} className="text-ochre hover:underline">
+              <Link href={`/portal/${token}/${d.id}`} className="text-turquoise hover:underline">
                 {d.title}
               </Link>
             </div>

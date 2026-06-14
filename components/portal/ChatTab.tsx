@@ -50,7 +50,7 @@ export default function ChatTab({ token, agentId }: { token: string; agentId: Ag
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Demandez à ${agent.name}… (Entrée pour envoyer, Maj+Entrée pour retour à la ligne)`}
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
         {state.error && <p className="text-sm text-clay">{state.error}</p>}
         <div className="flex justify-end">

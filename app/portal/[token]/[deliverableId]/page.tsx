@@ -26,7 +26,7 @@ export default async function PortalDeliverablePage({
       <header className="border-b border-line no-print">
         <div className="max-w-3xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-ochre">.</span>
+            Swiftflow<span className="text-turquoise">.</span>
           </span>
           <span className="font-mono text-xs text-ink/40">portail client</span>
         </div>
@@ -42,7 +42,7 @@ export default async function PortalDeliverablePage({
           </Link>
         </div>
 
-        <div className="mb-1 font-mono text-xs uppercase tracking-widest text-ochre">
+        <div className="mb-1 font-mono text-xs uppercase tracking-widest text-turquoise">
           {agent ? `${agent.name} · ${agent.role}` : deliverable.agent}
         </div>
         <h1 className="text-2xl font-semibold mb-6">{deliverable.title}</h1>

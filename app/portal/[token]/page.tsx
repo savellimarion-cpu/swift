@@ -32,14 +32,14 @@ export default async function PortalHubPage({
       <header className="border-b border-line">
         <div className="max-w-4xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-ochre">.</span>
+            Swiftflow<span className="text-turquoise">.</span>
           </span>
           <span className="font-mono text-xs text-ink/40">portail client</span>
         </div>
       </header>
 
       <div className="max-w-4xl mx-auto px-6 md:px-10 py-10">
-        <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-2">
+        <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
           {client.name}
         </div>
         <h1 className="text-2xl font-semibold mb-2">Votre équipe.</h1>

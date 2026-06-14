@@ -22,7 +22,7 @@ export default function RegisterForm() {
           type="text"
           required
           placeholder="ex. Studio Lumen, Agence Atlas…"
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
       <div>
@@ -33,7 +33,7 @@ export default function RegisterForm() {
           id="name"
           name="name"
           type="text"
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
       <div>
@@ -45,7 +45,7 @@ export default function RegisterForm() {
           name="email"
           type="email"
           required
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
       <div>
@@ -58,7 +58,7 @@ export default function RegisterForm() {
           type="password"
           required
           minLength={8}
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-ochre/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-turquoise/40"
         />
       </div>
 
@@ -70,7 +70,7 @@ export default function RegisterForm() {
 
       <p className="text-sm text-ink/50 text-center">
         Déjà un compte ?{" "}
-        <Link href="/login" className="text-ochre hover:underline">
+        <Link href="/login" className="text-turquoise hover:underline">
           Se connecter
         </Link>
       </p>

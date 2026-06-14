@@ -14,7 +14,7 @@ export default async function DashboardPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 md:px-10 py-10">
       <header className="mb-8">
-        <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-2">
+        <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
           {user.account.name}
         </div>
         <h1 className="text-2xl font-semibold">Vos clients</h1>
