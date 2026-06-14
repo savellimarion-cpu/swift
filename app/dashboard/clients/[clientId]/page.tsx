@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import ClientProfileForm from "@/components/ClientProfileForm";
 import GeneratePanel from "@/components/GeneratePanel";
 import PortalLinkSection from "@/components/PortalLinkSection";
+import AgentAccessForm from "@/components/AgentAccessForm";
 import { AGENTS, ACCENT_BORDER, ACCENT_TEXT } from "@/lib/agents";
 
 export default async function ClientPage({
@@ -35,6 +36,16 @@ export default async function ClientPage({
           livrables — aucun compte requis de leur côté.
         </p>
         <PortalLinkSection clientId={client.id} portalToken={client.portalToken} />
+      </section>
+
+      <section className="bg-white border border-line rounded-sm p-5 mb-6">
+        <h2 className="text-sm font-semibold mb-1">Accès aux agents</h2>
+        <p className="text-sm text-ink/50 mb-3">
+          Coche les agents accessibles pour {client.name} dans son espace
+          (selon l&apos;offre souscrite — Essentiel : 1-2 agents, Premium :
+          les 5). Les agents décochés disparaissent de son portail.
+        </p>
+        <AgentAccessForm clientId={client.id} enabledAgents={client.enabledAgents} />
       </section>
 
       <section className="bg-white border border-line rounded-sm p-5 mb-6">

@@ -17,7 +17,7 @@ directs à l'API Claude), et donne à ses propres clients un accès self-service
 - **Frontend + backend** : une seule application Next.js (App Router,
   Server Actions — pas d'API REST séparée à maintenir).
 - **Base de données** : Prisma ORM + Postgres (un projet gratuit Neon/Supabase
-  fonctionne aussi bien en local qu'en production — voir section 6,
+  fonctionne aussi bien en local qu'en production — voir section 7,
   Déploiement).
 - **IA** : chaque génération appelle directement
   `https://api.anthropic.com/v1/messages` avec la clé définie dans
@@ -39,7 +39,7 @@ directs à l'API Claude), et donne à ses propres clients un accès self-service
 - Node.js 18 ou plus récent.
 - Une base Postgres — la plus simple : un projet gratuit sur
   [neon.tech](https://neon.tech) (1 minute, sans carte bancaire). Tu peux
-  utiliser la même base en local et en production (voir section 6,
+  utiliser la même base en local et en production (voir section 7,
   Déploiement).
 - Une clé API Anthropic (sur [console.anthropic.com](https://console.anthropic.com)).
 
@@ -88,15 +88,19 @@ compte via "Essayer gratuitement" → tu arrives sur `/dashboard`.
    inclus dans **chaque** prompt envoyé à l'IA — c'est l'équivalent des
    fichiers `brand.md`/`icp.md`/`historique.md` de la version Claude Code,
    mais éditables via formulaire.
-3. **Génère** : choisis un agent dans le panneau "Générer un livrable",
+3. **Active les agents souscrits** : section "Accès aux agents" sur la page
+   du client — coche les agents correspondant à l'offre choisie (voir
+   section 4, "Page d'accueil & offres"). Décoché = invisible et
+   inaccessible dans l'espace de ce client.
+4. **Génère** : choisis un agent dans le panneau "Générer un livrable",
    remplis les champs spécifiques (objectif, format, période, sujet...), et
    valide. La génération appelle l'API Claude — ça prend de quelques
    secondes à ~1 minute selon l'agent et la longueur du livrable.
-4. **Consulte / modifie le statut** : chaque livrable a un statut
+5. **Consulte / modifie le statut** : chaque livrable a un statut
    (brouillon / validé / publié), modifiable depuis sa page de détail.
-5. **Partage** : depuis la page du client, génère un lien de portail et
-   envoie-le à ton client. Il arrive sur un hub listant ses 5 agents — voir
-   section suivante.
+6. **Partage** : depuis la page du client, génère un lien de portail et
+   envoie-le à ton client. Il arrive sur un hub listant les agents activés —
+   voir section 5.
 
 ### Ordre recommandé pour une campagne
 
@@ -126,7 +130,41 @@ fois déployé.
 
 ---
 
-## 4. Le portail client — un espace par agent
+## 4. Page d'accueil & offres
+
+La page `/` (racine du site) n'est plus une page marketing pour
+"Swiftflow" — c'est **votre tunnel de vente**, adressé à vos clients (les
+clients de votre agence). Elle présente les 5 agents et deux formules :
+
+- **Essentiel — 59 €/mois** : le client choisit 1 ou 2 agents.
+- **Premium — 199 €/mois** : accès aux 5 agents.
+
+Les boutons "Demander cette offre" ouvrent un email pré-rempli vers
+`CONTACT_EMAIL` (constante en haut de `app/page.tsx`) — il n'y a pas encore
+de paiement en ligne (Stripe), voir Roadmap. Le nom affiché ("360.marketing")
+est une constante `AGENCY_NAME` dans le même fichier — change ces deux
+constantes pour les adapter à ton agence.
+
+### Activer/désactiver des agents par client
+
+Une fois qu'un client a choisi son offre, ouvre sa page dans `/dashboard` →
+section **"Accès aux agents"** → coche les agents correspondants (1-2 pour
+Essentiel, les 5 pour Premium) et enregistre. C'est stocké dans
+`Client.enabledAgents` (liste d'IDs séparés par des virgules ; vide ou non
+renseigné = tous activés, pour rester compatible avec les clients existants).
+
+Effet côté portail client :
+- Le hub (`/portal/{token}`) n'affiche que les agents activés.
+- Ouvrir directement l'URL d'un agent désactivé renvoie une page 404.
+- Envoyer un message à un agent désactivé (chat) renvoie une erreur.
+
+Le lien `/login` (accès agence) n'est plus mis en avant sur la page
+d'accueil — il reste accessible via le petit lien "Espace agence" en bas de
+page.
+
+---
+
+## 5. Le portail client — un espace par agent
 
 Depuis cette version, le lien de portail (`/portal/{token}`) n'ouvre plus une
 simple liste de livrables : c'est un **hub** présentant les 5 agents comme une
@@ -193,7 +231,7 @@ Les onglets de chaque agent correspondent à ces routes :
 
 ---
 
-## 5. Coûts à anticiper
+## 6. Coûts à anticiper
 
 Chaque génération consomme des tokens de l'API Anthropic, facturés par
 Anthropic à l'usage (modèles Opus pour Stratège/Analyste, Sonnet pour les
@@ -206,7 +244,7 @@ par période.
 
 ---
 
-## 6. Déploiement
+## 7. Déploiement
 
 ### Base de données : Postgres (déjà configuré)
 
@@ -244,7 +282,7 @@ fonctionne très bien en production pour un usage agence/petite équipe).
 
 ---
 
-## 7. Sécurité — points à connaître
+## 8. Sécurité — points à connaître
 
 - Les mots de passe sont hashés avec bcrypt.
 - Les sessions sont des tokens opaques stockés en base (`Session`), posés en
@@ -258,7 +296,7 @@ fonctionne très bien en production pour un usage agence/petite équipe).
 
 ---
 
-## 8. Roadmap (non inclus dans cette version)
+## 9. Roadmap (non inclus dans cette version)
 
 - **Chat multi-tours persistant** (phase suivante de l'espace agent) :
   conserver l'historique des échanges par agent/client (modèle
@@ -271,8 +309,9 @@ fonctionne très bien en production pour un usage agence/petite équipe).
 - **Analytics détaillées par agent** (tokens, coût, latence, taux de succès,
   appels d'outils) : nécessite d'enregistrer ces métriques à chaque appel
   `callClaude` (actuellement seul le contenu généré est stocké).
-- **Facturation** (Stripe) : plans, limites de générations/mois,
-  abonnements par `Account`.
+- **Facturation** (Stripe) : checkout en ligne pour les offres Essentiel/
+  Premium de la page d'accueil (actuellement : demande par email, activation
+  manuelle via "Accès aux agents"), abonnements par `Account`/`Client`.
 - **Rôles multi-utilisateurs** : actuellement chaque `User` créé via
   l'inscription est `owner` ; inviter des collègues (`role: "member"`) sur
   le même `Account` est prévu par le modèle de données mais pas encore

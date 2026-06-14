@@ -71,8 +71,13 @@ model Client {
   // --- Historique (historique.md) ---
   historique     String? // campagnes passées, baseline, préférences client
 
-  // --- Portail client (lecture seule, sans compte) ---
+  // --- Portail client (sans compte) ---
   portalToken String? @unique
+
+  // --- Accès aux agents (selon l'offre souscrite) ---
+  // Liste d'IDs d'agents séparés par des virgules (ex: "createur-contenu,designer").
+  // null ou vide = tous les agents activés (valeur par défaut, rétro-compatible).
+  enabledAgents String?
 
   deliverables Deliverable[]
 

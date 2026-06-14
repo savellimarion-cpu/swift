@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT } from "@/lib/agents";
+import { enabledAgentsMeta, ACCENT_SOFT_BG, ACCENT_TEXT } from "@/lib/agents";
 import { relativeTimeFr } from "@/lib/format";
 
 export default async function PortalHubPage({
@@ -16,6 +16,8 @@ export default async function PortalHubPage({
     include: { deliverables: { select: { agent: true, createdAt: true } } },
   });
   if (!client) notFound();
+
+  const agents = enabledAgentsMeta(client.enabledAgents);
 
   const statsByAgent = new Map<string, { count: number; last: Date | null }>();
   for (const d of client.deliverables) {
@@ -46,35 +48,42 @@ export default async function PortalHubPage({
           qu&apos;il a déjà produit pour vous.
         </p>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          {AGENTS.map((agent) => {
-            const stats = statsByAgent.get(agent.id) ?? { count: 0, last: null };
-            const Icon = agent.icon;
-            return (
-              <Link
-                key={agent.id}
-                href={`/portal/${token}/agents/${agent.id}/chat`}
-                className="block bg-white border border-line rounded-sm p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${ACCENT_SOFT_BG[agent.accent]}`}>
-                    <Icon size={20} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
+        {agents.length === 0 ? (
+          <div className="border border-dashed border-line rounded-sm p-8 text-center text-ink/50 text-sm">
+            Aucun agent n&apos;est encore activé sur votre espace — votre
+            agence l&apos;activera dès que votre offre sera en place.
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4">
+            {agents.map((agent) => {
+              const stats = statsByAgent.get(agent.id) ?? { count: 0, last: null };
+              const Icon = agent.icon;
+              return (
+                <Link
+                  key={agent.id}
+                  href={`/portal/${token}/agents/${agent.id}/chat`}
+                  className="block bg-white border border-line rounded-sm p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${ACCENT_SOFT_BG[agent.accent]}`}>
+                      <Icon size={20} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
+                    </div>
+                    <span className="font-mono text-[11px] text-ink/40 mt-1">Ouvrir →</span>
                   </div>
-                  <span className="font-mono text-[11px] text-ink/40 mt-1">Ouvrir →</span>
-                </div>
-                <div className={`font-mono text-[11px] uppercase tracking-widest mb-1 ${ACCENT_TEXT[agent.accent]}`}>
-                  {agent.role}
-                </div>
-                <div className="text-lg font-semibold text-ink mb-1">{agent.name}</div>
-                <p className="text-sm text-ink/60 leading-relaxed mb-3">{agent.tagline}</p>
-                <div className="font-mono text-[11px] text-ink/40">
-                  {stats.count} livrable{stats.count === 1 ? "" : "s"}
-                  {stats.last ? ` · ${relativeTimeFr(stats.last)}` : ""}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                  <div className={`font-mono text-[11px] uppercase tracking-widest mb-1 ${ACCENT_TEXT[agent.accent]}`}>
+                    {agent.role}
+                  </div>
+                  <div className="text-lg font-semibold text-ink mb-1">{agent.name}</div>
+                  <p className="text-sm text-ink/60 leading-relaxed mb-3">{agent.tagline}</p>
+                  <div className="font-mono text-[11px] text-ink/40">
+                    {stats.count} livrable{stats.count === 1 ? "" : "s"}
+                    {stats.last ? ` · ${relativeTimeFr(stats.last)}` : ""}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

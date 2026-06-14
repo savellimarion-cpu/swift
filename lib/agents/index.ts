@@ -134,6 +134,35 @@ export function getAgentMeta(id: string): AgentMeta | undefined {
   return AGENTS.find((a) => a.id === id);
 }
 
+/**
+ * Agents activés pour un client, d'après `Client.enabledAgents`
+ * (liste d'IDs séparés par des virgules). `null`/vide -> tous activés
+ * (comportement par défaut, rétro-compatible avec les clients existants).
+ */
+export function enabledAgentIds(enabledAgents: string | null): AgentType[] {
+  if (!enabledAgents || !enabledAgents.trim()) {
+    return AGENTS.map((a) => a.id);
+  }
+  const ids = new Set(
+    enabledAgents
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  );
+  return AGENTS.filter((a) => ids.has(a.id)).map((a) => a.id);
+}
+
+/** Sérialise une sélection d'agents pour `Client.enabledAgents`. */
+export function serializeEnabledAgents(ids: AgentType[]): string {
+  return ids.join(",");
+}
+
+/** Agents activés pour un client, sous forme de métadonnées complètes. */
+export function enabledAgentsMeta(enabledAgents: string | null): AgentMeta[] {
+  const ids = new Set(enabledAgentIds(enabledAgents));
+  return AGENTS.filter((a) => ids.has(a.id));
+}
+
 /** Icônes communes aux 5 onglets de chaque espace agent. */
 export const COMMON_TAB_ICONS = {
   chat: MessageCircle,

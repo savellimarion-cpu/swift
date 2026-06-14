@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { callClaude } from "@/lib/anthropic";
 import { buildChatPrompt, chatDefaultTitle } from "@/lib/agents/chat";
-import { getAgentMeta, type AgentType } from "@/lib/agents";
+import { getAgentMeta, enabledAgentIds, type AgentType } from "@/lib/agents";
 
 export interface PortalChatState {
   error?: string;
@@ -32,6 +32,10 @@ export async function sendAgentMessageAction(
 
   const client = await prisma.client.findUnique({ where: { portalToken: token } });
   if (!client) return { error: "Ce lien de portail n'est plus valide." };
+
+  if (!enabledAgentIds(client.enabledAgents).includes(agentId)) {
+    return { error: "Cet agent n'est pas activé pour votre espace." };
+  }
 
   const recent = await prisma.deliverable.findMany({
     where: { clientId: client.id },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { getAgentMeta } from "@/lib/agents";
+import { getAgentMeta, enabledAgentIds } from "@/lib/agents";
 import AgentPersonaPanel from "@/components/portal/AgentPersonaPanel";
 import AgentTabNav from "@/components/portal/AgentTabNav";
 
@@ -19,6 +19,10 @@ export default async function AgentWorkspaceLayout({
 
   const client = await prisma.client.findUnique({ where: { portalToken: token } });
   if (!client) notFound();
+
+  if (!enabledAgentIds(client.enabledAgents).includes(agent.id)) {
+    notFound();
+  }
 
   const [livrablesCount, latest] = await Promise.all([
     prisma.deliverable.count({ where: { clientId: client.id, agent: agent.id } }),

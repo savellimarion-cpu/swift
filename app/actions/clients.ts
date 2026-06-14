@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireUser, requireClient, generateToken } from "@/lib/auth";
 import { slugify } from "@/lib/slug";
+import { AGENTS, serializeEnabledAgents } from "@/lib/agents";
 
 export interface ClientFormState {
   error?: string;
@@ -84,5 +85,26 @@ export async function revokePortalTokenAction(formData: FormData): Promise<void>
   const clientId = String(formData.get("clientId") ?? "");
   const { client } = await requireClient(clientId);
   await prisma.client.update({ where: { id: client.id }, data: { portalToken: null } });
+  revalidatePath(`/dashboard/clients/${client.id}`);
+}
+
+/**
+ * Met a jour la liste des agents actives pour ce client (selon l'offre
+ * souscrite - voir page d'accueil). Les ids coches arrivent comme plusieurs
+ * champs `agents` dans le formulaire ; aucune case cochee = liste vide
+ * (aucun agent - pas "tous", a la difference d'un champ non renseigne).
+ */
+export async function updateEnabledAgentsAction(formData: FormData): Promise<void> {
+  const clientId = String(formData.get("clientId") ?? "");
+  const { client } = await requireClient(clientId);
+
+  const selected = formData.getAll("agents").map((v) => String(v));
+  const valid = AGENTS.filter((a) => selected.includes(a.id)).map((a) => a.id);
+
+  await prisma.client.update({
+    where: { id: client.id },
+    data: { enabledAgents: serializeEnabledAgents(valid) },
+  });
+
   revalidatePath(`/dashboard/clients/${client.id}`);
 }

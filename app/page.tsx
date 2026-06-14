@@ -1,5 +1,21 @@
 import Link from "next/link";
-import { AGENTS, ACCENT_BG, ACCENT_BORDER, ACCENT_TEXT } from "@/lib/agents";
+import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, type AgentType } from "@/lib/agents";
+
+const AGENCY_NAME = "360.marketing";
+const CONTACT_EMAIL = "contact@360.marketing";
+
+const CLIENT_PITCH: Record<AgentType, string> = {
+  strategiste:
+    "Définit la direction de votre communication : positionnement, cible, angles éditoriaux du mois.",
+  "createur-contenu":
+    "Rédige vos posts, carrousels, scripts de Reels et emails — dans le ton de votre marque.",
+  designer:
+    "Prépare les visuels de vos publications, cohérents avec votre identité graphique.",
+  analyste:
+    "Lit vos résultats et propose un plan d'action concret pour le mois suivant.",
+  presentateur:
+    "Synthétise le travail du mois dans un compte-rendu clair, prêt à présenter.",
+};
 
 export default function LandingPage() {
   return (
@@ -8,7 +24,7 @@ export default function LandingPage() {
       <Hero />
       <AgentsSection />
       <HowItWorks />
-      <PortalSection />
+      <Pricing />
       <Footer />
     </div>
   );
@@ -18,24 +34,22 @@ function Header() {
   return (
     <header className="border-b border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-        <div className="flex items-baseline gap-2.5">
-          <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-ochre">.</span>
-          </span>
-          <span className="hidden sm:inline font-mono text-[11px] uppercase tracking-widest text-ink/40">
-            multi-agent marketing
-          </span>
-        </div>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/login" className="text-ink/60 hover:text-ink">
-            Connexion
-          </Link>
-          <Link
-            href="/register"
+        <span className="font-mono text-sm font-semibold tracking-tight">
+          360<span className="text-ochre">.</span>marketing
+        </span>
+        <nav className="flex items-center gap-5 text-sm">
+          <a href="#agents" className="hidden sm:inline text-ink/60 hover:text-ink">
+            Les agents
+          </a>
+          <a href="#offres" className="hidden sm:inline text-ink/60 hover:text-ink">
+            Tarifs
+          </a>
+          <a
+            href="#offres"
             className="bg-ink text-paper px-3.5 py-1.5 rounded-sm hover:bg-ink/85 transition-colors"
           >
-            Essayer gratuitement
-          </Link>
+            Démarrer
+          </a>
         </nav>
       </div>
     </header>
@@ -47,71 +61,66 @@ function Hero() {
     <section className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
       <div>
         <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-4">
-          5 agents · 1 plateforme
+          {AGENCY_NAME} · agents IA dédiés à votre marque
         </div>
         <h1 className="text-3xl md:text-4xl font-semibold leading-tight mb-5">
-          Votre équipe marketing IA, prête en un brief.
+          Une équipe de créateurs IA, prête à travailler pour votre marque.
         </h1>
         <p className="text-ink/65 leading-relaxed mb-8 max-w-md">
-          Décrivez votre client une fois — ton de marque, cible, historique —
-          puis générez briefs, posts, prompts visuels, rapports et decks avec
-          des agents spécialisés qui respectent vos règles de marque. Partagez
-          le résultat avec vos clients via un lien, sans qu&apos;ils aient
-          besoin de créer un compte.
+          Posts, carrousels, visuels, rapports de performance, présentations
+          — choisissez les agents qui rejoignent votre équipe, donnez-leur
+          vos consignes par chat, et récupérez des contenus prêts à publier.
+          Votre marque, votre ton, votre identité visuelle : tout est déjà
+          configuré par notre équipe.
         </p>
         <div className="flex items-center gap-4">
-          <Link
-            href="/register"
+          <a
+            href="#offres"
             className="bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 transition-colors font-medium"
           >
-            Créer mon espace
-          </Link>
-          <Link href="/login" className="text-ink/60 hover:text-ink text-sm">
-            J&apos;ai déjà un compte →
-          </Link>
+            Voir les offres
+          </a>
+          <a href="#agents" className="text-ink/60 hover:text-ink text-sm">
+            Découvrir les agents →
+          </a>
         </div>
       </div>
 
-      <DeliverablePreview />
+      <HeroPreview />
     </section>
   );
 }
 
-function DeliverablePreview() {
+function HeroPreview() {
+  const margaux = AGENTS.find((a) => a.id === "createur-contenu")!;
+  const Icon = margaux.icon;
+
   return (
-    <div className="bg-white border border-line border-l-[3px] border-l-clay rounded-sm p-5 shadow-sm">
-      <div className="font-mono text-[11px] text-ink/40 mb-3">
-        client: studio-lumen · agent: strategiste · statut: validé
+    <div className="bg-white border border-line rounded-sm p-5 shadow-sm">
+      <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-line">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${ACCENT_SOFT_BG[margaux.accent]}`}>
+          <Icon size={18} className={ACCENT_TEXT[margaux.accent]} aria-hidden="true" />
+        </div>
+        <div>
+          <div className="text-sm font-medium text-ink">{margaux.name}</div>
+          <div className="font-mono text-[11px] text-ink/40">{margaux.role}</div>
+        </div>
       </div>
-      <div className="font-semibold text-ink mb-2">
-        Brief — Campagne &quot;Lancement Printemps&quot;
+
+      <div className="flex justify-end mb-3">
+        <div className="bg-ink text-paper rounded-sm px-3 py-2 text-sm max-w-[85%]">
+          Crée un carrousel Instagram pour annoncer notre nouvelle collection
+        </div>
       </div>
-      <div className="text-sm text-ink/60 leading-relaxed space-y-2">
-        <p>
-          <span className="text-ink font-medium">Positionnement :</span> le
-          studio qui transforme un Pinterest en plan exécutable, sans y passer
-          ses week-ends.
-        </p>
-        <p>
-          <span className="text-ink font-medium">Angles :</span> Avant/Après
-          réels · Pinterest vs Réalité · Coulisses du rendez-vous découverte.
-        </p>
-        <p>
-          <span className="text-ink font-medium">Cadence :</span> 3
-          pièces/semaine sur 4 semaines.
-        </p>
+
+      <div className="text-sm text-ink/70 leading-relaxed mb-4">
+        Voici un carrousel de 5 slides (framework Hook-Story-Offer), avec 3
+        accroches à tester et un CTA vers la fiche produit...
       </div>
-      <div className="mt-4 pt-4 border-t border-line flex items-center gap-2">
-        {AGENTS.map((a) => (
-          <span
-            key={a.id}
-            className={`inline-block w-2 h-2 rounded-full ${ACCENT_BG[a.accent]}`}
-            title={a.label}
-          />
-        ))}
-        <span className="font-mono text-[11px] text-ink/40 ml-1">
-          → généré, prêt pour le créateur de contenu
-        </span>
+
+      <div className="pt-3 border-t border-line flex items-center justify-between font-mono text-[11px] text-ink/40">
+        <span>carrousel-collection-printemps</span>
+        <span className="border border-ochre/40 text-ochre rounded-sm px-1.5 py-0.5">brouillon</span>
       </div>
     </div>
   );
@@ -119,34 +128,39 @@ function DeliverablePreview() {
 
 function AgentsSection() {
   return (
-    <section className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
+    <section id="agents" className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
       <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
         L&apos;équipe
       </h2>
-      <h3 className="text-2xl font-semibold mb-8 max-w-lg">
-        Cinq agents spécialisés, plutôt qu&apos;un généraliste qui dérive.
+      <h3 className="text-2xl font-semibold mb-3 max-w-lg">
+        5 agents spécialisés, à votre service.
       </h3>
+      <p className="text-ink/60 leading-relaxed mb-8 max-w-2xl">
+        Chaque agent a un rôle précis et connaît déjà votre marque — ton,
+        vocabulaire, identité visuelle, cible. Selon votre formule, vous
+        choisissez ceux qui rejoignent votre équipe.
+      </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {AGENTS.map((agent) => (
-          <div
-            key={agent.id}
-            className={`bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5`}
-          >
-            <div className="flex items-center justify-between mb-1">
-              <div className="font-semibold">{agent.label}</div>
-              <span className={`font-mono text-[11px] border rounded-sm px-1.5 py-0.5 ${ACCENT_TEXT[agent.accent]} ${ACCENT_BORDER[agent.accent]}`}>
-                {agent.model}
-              </span>
+        {AGENTS.map((agent) => {
+          const Icon = agent.icon;
+          return (
+            <div
+              key={agent.id}
+              className={`bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5`}
+            >
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center mb-3 ${ACCENT_SOFT_BG[agent.accent]}`}>
+                <Icon size={18} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
+              </div>
+              <div className="flex items-center justify-between mb-1">
+                <div className="font-semibold">{agent.name}</div>
+                <span className={`font-mono text-[11px] uppercase tracking-widest ${ACCENT_TEXT[agent.accent]}`}>
+                  {agent.role}
+                </span>
+              </div>
+              <p className="text-sm text-ink/60 leading-relaxed">{CLIENT_PITCH[agent.id]}</p>
             </div>
-            <p className="text-sm text-ink/60">{agent.role}</p>
-          </div>
-        ))}
-        <div className="bg-paper border border-dashed border-line rounded-sm p-5 flex items-center justify-center text-center">
-          <p className="text-sm text-ink/45">
-            + agents support (boîte mail, calls, recrutement) — en feuille de
-            route
-          </p>
-        </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -155,16 +169,16 @@ function AgentsSection() {
 function HowItWorks() {
   const steps = [
     {
-      title: "Configurez votre client",
-      body: "Ton de marque, vocabulaire interdit, identité visuelle, ICP, historique des campagnes — une fois rempli, chaque agent en tient compte automatiquement.",
+      title: "Choisissez votre formule",
+      body: "Un ou deux agents pour démarrer, ou l'équipe complète — selon vos besoins du moment. Vous pouvez évoluer à tout moment.",
     },
     {
-      title: "Générez avec l'agent qu'il vous faut",
-      body: "Brief, post, pack de prompts images, rapport + plan 30 jours, ou deck — chaque génération s'appuie sur les livrables précédents pour rester cohérente.",
+      title: "Briefez vos agents par chat",
+      body: "Chaque agent a son espace dédié : décrivez ce qu'il vous faut, il connaît déjà votre marque et vos derniers contenus.",
     },
     {
-      title: "Validez, ajustez, partagez",
-      body: "Chaque livrable est éditable. Une fois prêt, partagez-le — ou l'ensemble du dossier client — via un lien de portail en lecture, sans compte à créer pour votre client.",
+      title: "Recevez vos contenus",
+      body: "Posts, visuels, rapports, présentations — prêts à relire, valider et publier, accessibles à tout moment depuis votre espace.",
     },
   ];
 
@@ -188,33 +202,84 @@ function HowItWorks() {
   );
 }
 
-function PortalSection() {
+function Pricing() {
+  const essentielHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    "Offre Essentiel — " + AGENCY_NAME
+  )}`;
+  const premiumHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    "Offre Premium — " + AGENCY_NAME
+  )}`;
+
   return (
-    <section className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
-      <div className="bg-white border border-line rounded-sm p-8 md:p-12 grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <h2 className="font-mono text-xs uppercase tracking-widest text-forest mb-2">
-            Portail client
-          </h2>
-          <h3 className="text-2xl font-semibold mb-3">
-            Vos clients voient le travail, pas l&apos;outil.
-          </h3>
-          <p className="text-ink/60 leading-relaxed">
-            Chaque client dispose d&apos;un lien de consultation en lecture
-            seule : briefs, posts, visuels, rapports et decks, présentés
-            proprement — sans qu&apos;ils aient besoin de créer un compte ni
-            de comprendre comment fonctionne la génération.
-          </p>
-        </div>
-        <div className="font-mono text-xs bg-paper border border-dashed border-line rounded-sm p-4 text-ink/50">
-          swiftflow.app/portail/<span className="text-ochre">a1b2c3d4e5f6...</span>
-          <div className="mt-3 space-y-1.5 text-ink/40">
-            <div>→ briefs/lancement-printemps</div>
-            <div>→ content/3 pièces</div>
-            <div>→ decks/restitution</div>
+    <section id="offres" className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
+      <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
+        Tarifs
+      </h2>
+      <h3 className="text-2xl font-semibold mb-8 max-w-lg">
+        Deux formules, simples.
+      </h3>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white border border-line rounded-sm p-6 md:p-8">
+          <div className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
+            Essentiel
           </div>
+          <div className="flex items-baseline gap-1 mb-4">
+            <span className="text-3xl font-semibold">59 €</span>
+            <span className="text-ink/50 text-sm">/ mois</span>
+          </div>
+          <p className="text-sm text-ink/60 leading-relaxed mb-5">
+            Choisissez 1 ou 2 agents — par exemple votre créateur de contenu
+            et votre designer — pour démarrer simplement.
+          </p>
+          <ul className="text-sm text-ink/70 space-y-2 mb-6">
+            <li>• 1 ou 2 agents au choix</li>
+            <li>• Conversations illimitées avec vos agents</li>
+            <li>• Mémoire de marque configurée par notre équipe</li>
+            <li>• Tous vos contenus accessibles dans votre espace</li>
+          </ul>
+          <a
+            href={essentielHref}
+            className="block text-center border border-ink text-ink px-5 py-2.5 rounded-sm hover:bg-ink hover:text-paper transition-colors font-medium"
+          >
+            Demander cette offre
+          </a>
+        </div>
+
+        <div className="bg-white border-2 border-ochre rounded-sm p-6 md:p-8">
+          <div className="font-mono text-xs uppercase tracking-widest text-ochre mb-2">
+            Premium
+          </div>
+          <div className="flex items-baseline gap-1 mb-4">
+            <span className="text-3xl font-semibold">199 €</span>
+            <span className="text-ink/50 text-sm">/ mois</span>
+          </div>
+          <p className="text-sm text-ink/60 leading-relaxed mb-5">
+            Toute l&apos;équipe à votre service : stratégie, contenu, visuels,
+            analyse et présentations.
+          </p>
+          <ul className="text-sm text-ink/70 space-y-2 mb-6">
+            <li>• Les 5 agents — {AGENTS.map((a) => a.name).join(", ")}</li>
+            <li>• Conversations illimitées avec toute l&apos;équipe</li>
+            <li>• Rapport mensuel de performance et plan d&apos;action</li>
+            <li>• Mémoire de marque configurée et tenue à jour par notre équipe</li>
+          </ul>
+          <a
+            href={premiumHref}
+            className="block text-center bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 transition-colors font-medium"
+          >
+            Demander cette offre
+          </a>
         </div>
       </div>
+
+      <p className="text-sm text-ink/40 mt-6">
+        Une question avant de vous lancer ? Écrivez-nous à{" "}
+        <a href={`mailto:${CONTACT_EMAIL}`} className="text-ochre hover:underline">
+          {CONTACT_EMAIL}
+        </a>
+        .
+      </p>
     </section>
   );
 }
@@ -224,10 +289,11 @@ function Footer() {
     <footer className="border-t border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-ink/40">
         <span className="font-mono">
-          Swiftflow<span className="text-ochre">.</span>{" "}
-          <span className="text-ink/30">— multi-agent marketing</span>
+          360<span className="text-ochre">.</span>marketing
         </span>
-        <span>Le moteur, ce sont les agents.</span>
+        <Link href="/login" className="font-mono text-xs text-ink/30 hover:text-ink/60">
+          Espace agence →
+        </Link>
       </div>
     </footer>
   );
