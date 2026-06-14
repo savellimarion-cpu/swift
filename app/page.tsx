@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, type AgentType } from "@/lib/agents";
+import Reveal from "@/components/Reveal";
+import AgentIllustration from "@/components/AgentIllustration";
 
 const AGENCY_NAME = "Swiftflow";
 const CONTACT_EMAIL = "contact@swiftflow.agency";
@@ -46,7 +48,7 @@ function Header() {
           </a>
           <a
             href="#offres"
-            className="bg-ink text-paper px-3.5 py-1.5 rounded-sm hover:bg-ink/85 transition-colors"
+            className="bg-ink text-paper px-3.5 py-1.5 rounded-sm hover:bg-ink/85 hover:scale-105 transition-all"
           >
             Démarrer
           </a>
@@ -59,11 +61,11 @@ function Header() {
 function Hero() {
   return (
     <section className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
-      <div>
+      <Reveal>
         <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-4">
           {AGENCY_NAME} · agents IA dédiés à votre marque
         </div>
-        <h1 className="text-3xl md:text-4xl font-semibold leading-tight mb-5">
+        <h1 className="text-3xl md:text-4xl leading-tight mb-5">
           Une équipe de créateurs IA, prête à travailler pour votre marque.
         </h1>
         <p className="text-ink/65 leading-relaxed mb-8 max-w-md">
@@ -76,17 +78,19 @@ function Hero() {
         <div className="flex items-center gap-4">
           <a
             href="#offres"
-            className="bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 transition-colors font-medium"
+            className="bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 hover:scale-105 transition-all font-medium"
           >
             Voir les offres
           </a>
-          <a href="#agents" className="text-ink/60 hover:text-ink text-sm">
+          <a href="#agents" className="text-ink/60 hover:text-ink hover:translate-x-0.5 transition-all text-sm inline-block">
             Découvrir les agents →
           </a>
         </div>
-      </div>
+      </Reveal>
 
-      <HeroPreview />
+      <Reveal delay={150}>
+        <HeroPreview />
+      </Reveal>
     </section>
   );
 }
@@ -98,12 +102,16 @@ function HeroPreview() {
   return (
     <div className="bg-white border border-line rounded-sm p-5 shadow-sm">
       <div className="flex items-center gap-2.5 mb-4 pb-4 border-b border-line">
-        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${ACCENT_SOFT_BG[margaux.accent]}`}>
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center animate-float ${ACCENT_SOFT_BG[margaux.accent]}`}>
           <Icon size={18} className={ACCENT_TEXT[margaux.accent]} aria-hidden="true" />
         </div>
         <div>
           <div className="text-sm font-medium text-ink">{margaux.name}</div>
           <div className="font-mono text-[11px] text-ink/40">{margaux.role}</div>
+        </div>
+        <div className="ml-auto flex items-center gap-1.5">
+          <span className={`w-1.5 h-1.5 rounded-full animate-soft-pulse ${ACCENT_SOFT_BG[margaux.accent].replace("/10", "")}`} />
+          <span className="font-mono text-[10px] text-ink/40">en ligne</span>
         </div>
       </div>
 
@@ -129,36 +137,42 @@ function HeroPreview() {
 function AgentsSection() {
   return (
     <section id="agents" className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
-      <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
-        L&apos;équipe
-      </h2>
-      <h3 className="text-2xl font-semibold mb-3 max-w-lg">
-        5 agents spécialisés, à votre service.
-      </h3>
-      <p className="text-ink/60 leading-relaxed mb-8 max-w-2xl">
-        Chaque agent a un rôle précis et connaît déjà votre marque — ton,
-        vocabulaire, identité visuelle, cible. Selon votre formule, vous
-        choisissez ceux qui rejoignent votre équipe.
-      </p>
+      <Reveal>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
+          L&apos;équipe
+        </h2>
+        <h3 className="text-2xl mb-3 max-w-lg">
+          5 agents spécialisés, à votre service.
+        </h3>
+        <p className="text-ink/60 leading-relaxed mb-8 max-w-2xl">
+          Chaque agent a un rôle précis et connaît déjà votre marque — ton,
+          vocabulaire, identité visuelle, cible. Selon votre formule, vous
+          choisissez ceux qui rejoignent votre équipe.
+        </p>
+      </Reveal>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {AGENTS.map((agent) => {
+        {AGENTS.map((agent, i) => {
           const Icon = agent.icon;
           return (
-            <div
-              key={agent.id}
-              className={`bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5`}
-            >
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center mb-3 ${ACCENT_SOFT_BG[agent.accent]}`}>
-                <Icon size={18} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
+            <Reveal key={agent.id} delay={i * 80}>
+              <div
+                className={`group bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5 hover:-translate-y-1 hover:shadow-sm transition-all`}
+              >
+                <div className={`w-16 h-16 mb-3 ${ACCENT_TEXT[agent.accent]} transition-transform group-hover:scale-105`}>
+                  <AgentIllustration agentId={agent.id} />
+                </div>
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center mb-3 ${ACCENT_SOFT_BG[agent.accent]}`}>
+                  <Icon size={18} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
+                </div>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-semibold">{agent.name}</div>
+                  <span className={`font-mono text-[11px] uppercase tracking-widest ${ACCENT_TEXT[agent.accent]}`}>
+                    {agent.role}
+                  </span>
+                </div>
+                <p className="text-sm text-ink/60 leading-relaxed">{CLIENT_PITCH[agent.id]}</p>
               </div>
-              <div className="flex items-center justify-between mb-1">
-                <div className="font-semibold">{agent.name}</div>
-                <span className={`font-mono text-[11px] uppercase tracking-widest ${ACCENT_TEXT[agent.accent]}`}>
-                  {agent.role}
-                </span>
-              </div>
-              <p className="text-sm text-ink/60 leading-relaxed">{CLIENT_PITCH[agent.id]}</p>
-            </div>
+            </Reveal>
           );
         })}
       </div>
@@ -184,18 +198,20 @@ function HowItWorks() {
 
   return (
     <section className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
-      <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
-        Comment ça marche
-      </h2>
+      <Reveal>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
+          Comment ça marche
+        </h2>
+      </Reveal>
       <div className="grid md:grid-cols-3 gap-8 mt-8">
         {steps.map((step, i) => (
-          <div key={step.title}>
+          <Reveal key={step.title} delay={i * 100}>
             <div className="font-mono text-2xl text-turquoise mb-3">
               {String(i + 1).padStart(2, "0")}
             </div>
-            <h3 className="font-semibold mb-2">{step.title}</h3>
+            <h3 className="text-lg mb-2">{step.title}</h3>
             <p className="text-sm text-ink/60 leading-relaxed">{step.body}</p>
-          </div>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -212,15 +228,18 @@ function Pricing() {
 
   return (
     <section id="offres" className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
-      <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
-        Tarifs
-      </h2>
-      <h3 className="text-2xl font-semibold mb-8 max-w-lg">
-        Deux formules, simples.
-      </h3>
+      <Reveal>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
+          Tarifs
+        </h2>
+        <h3 className="text-2xl mb-8 max-w-lg">
+          Deux formules, simples.
+        </h3>
+      </Reveal>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white border border-line rounded-sm p-6 md:p-8">
+        <Reveal>
+        <div className="bg-white border border-line rounded-sm p-6 md:p-8 h-full">
           <div className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
             Essentiel
           </div>
@@ -245,8 +264,10 @@ function Pricing() {
             Demander cette offre
           </a>
         </div>
+        </Reveal>
 
-        <div className="bg-white border-2 border-turquoise rounded-sm p-6 md:p-8">
+        <Reveal delay={120}>
+        <div className="bg-white border-2 border-turquoise rounded-sm p-6 md:p-8 h-full hover:-translate-y-1 hover:shadow-sm transition-all">
           <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
             Premium
           </div>
@@ -266,11 +287,12 @@ function Pricing() {
           </ul>
           <a
             href={premiumHref}
-            className="block text-center bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 transition-colors font-medium"
+            className="block text-center bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 hover:scale-[1.02] transition-all font-medium"
           >
             Demander cette offre
           </a>
         </div>
+        </Reveal>
       </div>
 
       <p className="text-sm text-ink/40 mt-6">

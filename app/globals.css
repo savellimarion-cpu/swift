@@ -7,8 +7,50 @@
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+h1, h2, h3 {
+  font-family: var(--font-outfit), var(--font-jakarta), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
 body {
   background-color: #FAFAFC;
+}
+
+/* --- Animations page d'accueil ---------------------------------------- */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal.is-visible {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.animate-soft-pulse {
+  animation: softPulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; animation: none; }
+  .animate-float, .animate-soft-pulse { animation: none; }
 }
 
 /* --- Rendu markdown des livrables ----------------------------------- */

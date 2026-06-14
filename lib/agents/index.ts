@@ -40,7 +40,7 @@ export interface AgentMeta {
   /** Phrase courte affichée sur la fiche de l'agent. */
   tagline: string;
   model: "Opus" | "Sonnet";
-  accent: "turquoise" | "violet" | "pink";
+  accent: "turquoise" | "violet" | "pink" | "blue" | "amber";
   icon: LucideIcon;
   outputTab: AgentOutputTab;
   /** Exemples de demandes affichés sur l'onglet Chat. */
@@ -103,7 +103,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Analyste",
     tagline: "Lecture des chiffres & plan d'optimisation à 30 jours.",
     model: "Opus",
-    accent: "turquoise",
+    accent: "blue",
     icon: TrendingUp,
     outputTab: { slug: "rapports", label: "Rapports", icon: FileBarChart },
     suggestions: [
@@ -119,7 +119,7 @@ export const AGENTS: AgentMeta[] = [
     role: "Présentateur",
     tagline: "Decks de restitution, prêts à présenter.",
     model: "Sonnet",
-    accent: "violet",
+    accent: "amber",
     icon: Presentation,
     outputTab: { slug: "decks", label: "Decks", icon: Layers },
     suggestions: [
@@ -189,22 +189,30 @@ export const ACCENT_BG: Record<AgentMeta["accent"], string> = {
   turquoise: "bg-turquoise",
   violet: "bg-violet-500",
   pink: "bg-pink-500",
+  blue: "bg-blue-500",
+  amber: "bg-amber-600",
 };
 
 export const ACCENT_TEXT: Record<AgentMeta["accent"], string> = {
   turquoise: "text-turquoise",
   violet: "text-violet-500",
   pink: "text-pink-500",
+  blue: "text-blue-500",
+  amber: "text-amber-600",
 };
 
 export const ACCENT_BORDER: Record<AgentMeta["accent"], string> = {
   turquoise: "border-turquoise",
   violet: "border-violet-500",
   pink: "border-pink-500",
+  blue: "border-blue-500",
+  amber: "border-amber-600",
 };
 
 export const ACCENT_SOFT_BG: Record<AgentMeta["accent"], string> = {
   turquoise: "bg-turquoise/10",
   violet: "bg-violet-500/10",
   pink: "bg-pink-500/10",
+  blue: "bg-blue-500/10",
+  amber: "bg-amber-600/10",
 };
