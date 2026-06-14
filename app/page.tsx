@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import Logo from "@/components/Logo";
 import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, ACCENT_GLOW, type AgentType } from "@/lib/agents";
-import { PLANS } from "@/lib/plans";
+import { PLANS, SETUP_FEE } from "@/lib/plans";
 import Reveal from "@/components/Reveal";
 import AgentIllustration from "@/components/AgentIllustration";
 
@@ -9,6 +10,8 @@ const AGENCY_NAME = "Swiftflow";
 const CONTACT_EMAIL = "contact@swiftflow.agency";
 
 const CLIENT_PITCH: Record<AgentType, string> = {
+  manager:
+    "Pilote toute l'équipe : fait le point sur l'avancement et vous oriente vers le bon agent pour chaque besoin.",
   strategiste:
     "Définit la direction de votre communication : positionnement, cible, angles éditoriaux du mois.",
   "createur-contenu":
@@ -21,30 +24,6 @@ const CLIENT_PITCH: Record<AgentType, string> = {
     "Synthétise le travail du mois dans un compte-rendu clair, prêt à présenter.",
 };
 
-/** Mini-échange illustratif affiché sur chaque carte agent (exemples, pas des retours clients réels). */
-const AGENT_DEMO: Record<AgentType, { prompt: string; reply: string }> = {
-  strategiste: {
-    prompt: "On lance une nouvelle gamme en mars, aide-moi à cadrer la campagne.",
-    reply: "Voici le brief : positionnement, cible prioritaire et 3 angles éditoriaux pour le mois.",
-  },
-  "createur-contenu": {
-    prompt: "Un post LinkedIn pour annoncer notre nouvelle fonctionnalité.",
-    reply: "3 accroches + le post complet (framework AIDA), prêt à publier.",
-  },
-  designer: {
-    prompt: "Un visuel pour la story Instagram de ce post.",
-    reply: "Visuel généré en 9:16, cohérent avec votre palette — prêt à télécharger.",
-  },
-  analyste: {
-    prompt: "Comment se sont comportés nos contenus le mois dernier ?",
-    reply: "Rapport détaillé + un plan d'action concret pour le mois prochain.",
-  },
-  presentateur: {
-    prompt: "Prépare une synthèse du mois pour notre prochain point.",
-    reply: "Deck de 8 slides, structure claire, prêt à présenter.",
-  },
-};
-
 export default function LandingPage() {
   return (
     <div>
@@ -53,6 +32,7 @@ export default function LandingPage() {
       <AgentsSection />
       <HowItWorks />
       <Pricing />
+      <SupportAgents />
       <FAQ />
       <Footer />
     </div>
@@ -63,9 +43,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-paper/75 backdrop-blur-md">
       <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-        <span className="font-mono text-sm font-semibold tracking-tight">
-          Swiftflow<span className="text-turquoise">.</span>
-        </span>
+        <Logo />
         <nav className="flex items-center gap-5 text-sm">
           <a href="#agents" className="hidden sm:inline text-ink/60 hover:text-ink">
             Les agents
@@ -177,7 +155,7 @@ function AgentsSection() {
           L&apos;équipe
         </h2>
         <h3 className="text-2xl mb-3 max-w-lg">
-          5 agents spécialisés, à votre service.
+          6 agents spécialisés, à votre service.
         </h3>
         <p className="text-ink/60 leading-relaxed mb-8 max-w-2xl">
           Chaque agent a un rôle précis et connaît déjà votre marque — ton,
@@ -188,7 +166,6 @@ function AgentsSection() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {AGENTS.map((agent, i) => {
           const Icon = agent.icon;
-          const demo = AGENT_DEMO[agent.id];
           return (
             <Reveal key={agent.id} delay={i * 80}>
               <div
@@ -206,20 +183,7 @@ function AgentsSection() {
                     {agent.role}
                   </span>
                 </div>
-                <p className="text-sm text-ink/60 leading-relaxed mb-4">{CLIENT_PITCH[agent.id]}</p>
-
-                <div className="border-t border-line pt-3 space-y-1.5">
-                  <div className="flex justify-end">
-                    <div className="bg-paper border border-line rounded-sm px-2.5 py-1.5 text-xs text-ink/70 max-w-[88%]">
-                      {demo.prompt}
-                    </div>
-                  </div>
-                  <div className="flex justify-start">
-                    <div className={`${ACCENT_SOFT_BG[agent.accent]} rounded-sm px-2.5 py-1.5 text-xs ${ACCENT_TEXT[agent.accent]} max-w-[88%]`}>
-                      {demo.reply}
-                    </div>
-                  </div>
-                </div>
+                <p className="text-sm text-ink/60 leading-relaxed">{CLIENT_PITCH[agent.id]}</p>
               </div>
             </Reveal>
           );
@@ -305,10 +269,13 @@ function Pricing() {
                 >
                   {plan.name}
                 </div>
-                <div className="flex items-baseline gap-1 mb-2">
+                <div className="flex items-baseline gap-1 mb-1">
                   <span className="text-3xl font-semibold">{plan.price} €</span>
                   <span className="text-ink/50 text-sm">/ mois</span>
                 </div>
+                <p className="font-mono text-[11px] text-ink/40 mb-3">
+                  + {SETUP_FEE} € de mise en place (1er mois)
+                </p>
                 <p className="text-sm text-ink/60 leading-relaxed mb-5">{plan.subtitle}</p>
 
                 <div className="font-mono text-[11px] uppercase tracking-widest text-ink/40 mb-2">
@@ -363,10 +330,62 @@ function Pricing() {
   );
 }
 
+const SUPPORT_AGENTS = [
+  {
+    name: "Agent boîte mail",
+    desc: "Tri, réponses et suivi de votre messagerie — pour ne plus rien laisser sans réponse.",
+  },
+  {
+    name: "Agent calls",
+    desc: "Réception et qualification de vos appels entrants, comptes-rendus automatiques.",
+  },
+  {
+    name: "Agent prospection",
+    desc: "Recherche de prospects et premiers messages d'approche, sur les canaux de votre choix.",
+  },
+];
+
+function SupportAgents() {
+  const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    "Agents support sur devis — " + AGENCY_NAME
+  )}`;
+
+  return (
+    <section className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
+      <Reveal>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">Sur devis</h2>
+        <h3 className="text-2xl mb-3 max-w-lg">Des agents support, sur mesure.</h3>
+        <p className="text-ink/60 leading-relaxed mb-8 max-w-2xl">
+          Au-delà de votre équipe marketing, d&apos;autres agents peuvent rejoindre votre
+          espace selon vos besoins — disponibles sur demande, configuration sur devis.
+        </p>
+      </Reveal>
+      <div className="grid sm:grid-cols-3 gap-4 mb-8">
+        {SUPPORT_AGENTS.map((a, i) => (
+          <Reveal key={a.name} delay={i * 80}>
+            <div className="bg-white border border-line rounded-sm p-5 h-full">
+              <div className="font-semibold mb-1">{a.name}</div>
+              <p className="text-sm text-ink/60 leading-relaxed">{a.desc}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+      <Reveal>
+        <a
+          href={href}
+          className="inline-block border border-ink text-ink px-5 py-2.5 rounded-sm hover:bg-ink hover:text-paper transition-colors font-medium"
+        >
+          Demander un devis
+        </a>
+      </Reveal>
+    </section>
+  );
+}
+
 const FAQ_ITEMS = [
   {
     q: "Comment se passe la mise en place ?",
-    a: "Votre agence configure la mémoire de marque de chaque agent (ton, vocabulaire, identité visuelle, cible) avant de vous donner accès à votre espace — vous n'avez rien à paramétrer.",
+    a: `C'est l'agence ${AGENCY_NAME} qui, lors de la mise en place, configure la mémoire de marque de chaque agent (ton, vocabulaire, identité visuelle, cible) avant de vous donner accès à votre espace — vous n'avez rien à paramétrer. Cette mise en place est facturée ${SETUP_FEE} €, en plus de l'abonnement du premier mois ; les mois suivants, seul l'abonnement mensuel est facturé.`,
   },
   {
     q: "Puis-je changer d'offre à tout moment ?",
@@ -420,9 +439,7 @@ function Footer() {
   return (
     <footer className="border-t border-line">
       <div className="max-w-5xl mx-auto px-6 md:px-10 py-8 flex flex-wrap items-center justify-between gap-4 text-sm text-ink/40">
-        <span className="font-mono">
-          Swiftflow<span className="text-turquoise">.</span>
-        </span>
+        <Logo className="h-5 opacity-60" />
         <Link href="/login" className="font-mono text-xs text-ink/30 hover:text-ink/60">
           Espace agence →
         </Link>

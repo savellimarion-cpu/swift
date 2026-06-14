@@ -2,6 +2,9 @@ import type { AgentType } from "@/lib/agents";
 
 export type PlanId = "content" | "marketing" | "equipe-complete";
 
+/** Frais de mise en place, facturés une seule fois avec le premier mois d'abonnement. */
+export const SETUP_FEE = 150;
+
 export interface PlanDef {
   id: PlanId;
   name: string;
@@ -26,7 +29,7 @@ export const PLANS: PlanDef[] = [
     price: 79,
     credits: 40,
     subtitle: "Pour les entreprises qui savent déjà quoi communiquer.",
-    agentIds: ["createur-contenu", "designer"],
+    agentIds: ["manager", "createur-contenu", "designer"],
     extras: [],
     result: "création de posts, carrousels, emails, visuels.",
   },
@@ -36,7 +39,7 @@ export const PLANS: PlanDef[] = [
     price: 149,
     credits: 60,
     subtitle: "Pour les entreprises qui veulent aussi une direction.",
-    agentIds: ["strategiste", "createur-contenu", "designer"],
+    agentIds: ["manager", "strategiste", "createur-contenu", "designer"],
     extras: [],
     result: "stratégie + contenu + visuels.",
     featured: true,
@@ -47,7 +50,7 @@ export const PLANS: PlanDef[] = [
     price: 249,
     credits: 100,
     subtitle: "Le département marketing complet.",
-    agentIds: ["strategiste", "createur-contenu", "designer", "analyste", "presentateur"],
+    agentIds: ["manager", "strategiste", "createur-contenu", "designer", "analyste", "presentateur"],
     extras: [
       "Rapports mensuels",
       "Analyse des performances",

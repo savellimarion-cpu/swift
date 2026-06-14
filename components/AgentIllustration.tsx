@@ -8,6 +8,23 @@ import type { AgentType } from "@/lib/agents";
  */
 export default function AgentIllustration({ agentId }: { agentId: AgentType }) {
   switch (agentId) {
+    case "manager":
+      // Hub central relié à 5 agents satellites — chef d'orchestre de l'équipe.
+      return (
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <line x1="60" y1="60" x2="30" y2="32" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+          <line x1="60" y1="60" x2="90" y2="32" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+          <line x1="60" y1="60" x2="24" y2="84" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+          <line x1="60" y1="60" x2="96" y2="84" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+          <line x1="60" y1="60" x2="60" y2="96" stroke="currentColor" strokeOpacity="0.25" strokeWidth="3" />
+          <circle cx="30" cy="32" r="9" fill="currentColor" fillOpacity="0.25" />
+          <circle cx="90" cy="32" r="9" fill="currentColor" fillOpacity="0.35" />
+          <circle cx="24" cy="84" r="9" fill="currentColor" fillOpacity="0.45" />
+          <circle cx="96" cy="84" r="9" fill="currentColor" fillOpacity="0.55" />
+          <circle cx="60" cy="96" r="9" fill="currentColor" fillOpacity="0.65" />
+          <circle cx="60" cy="60" r="17" fill="currentColor" fillOpacity="0.95" />
+        </svg>
+      );
     case "strategiste":
       // Boussole : cercles concentriques + aiguille.
       return (

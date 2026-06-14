@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import DeliverableView from "@/components/DeliverableView";
+import Logo from "@/components/Logo";
 import { getAgentMeta } from "@/lib/agents";
 
 export default async function PortalDeliverablePage({
@@ -25,9 +26,7 @@ export default async function PortalDeliverablePage({
     <div className="min-h-screen">
       <header className="border-b border-line no-print">
         <div className="max-w-3xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-          <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-turquoise">.</span>
-          </span>
+          <Logo />
           <span className="font-mono text-xs text-ink/40">portail client</span>
         </div>
       </header>

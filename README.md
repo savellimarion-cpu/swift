@@ -1,8 +1,8 @@
 # Swiftflow — multi-agent marketing (application web SaaS)
 
 Application web complète : chaque compte (une agence/freelance) gère ses
-clients marketing, génère des livrables via 5 agents IA spécialisés (appels
-directs à l'API Claude), et donne à ses propres clients un accès self-service
+clients marketing, génère des livrables via 6 agents IA spécialisés (appels
+directs à l'API Claude, et à l'API OpenAI pour les visuels), et donne à ses propres clients un accès self-service
 à ces agents via un portail dédié, sans compte requis côté client.
 
 > Cette application est la version "web vendable" du projet. La version
@@ -21,8 +21,8 @@ directs à l'API Claude), et donne à ses propres clients un accès self-service
   Déploiement).
 - **IA** : chaque génération appelle directement
   `https://api.anthropic.com/v1/messages` avec la clé définie dans
-  `ANTHROPIC_API_KEY`. Les "personnalités" des 5 agents (Stratège, Créateur
-  de Contenu, Designer, Analyste, Présentateur) sont définies dans
+  `ANTHROPIC_API_KEY`. Les "personnalités" des 6 agents (Manager, Stratège,
+  Créateur de Contenu, Designer, Analyste, Présentateur) sont définies dans
   `lib/agents/*.ts`.
 - **Multi-compte** : un `Account` = une agence/freelance. Chaque `Account` a
   ses `User`s (connexion par email/mot de passe) et ses `Client`s.
@@ -134,22 +134,41 @@ fois déployé.
 
 La page `/` (racine du site) est **votre tunnel de vente**, adressé à vos
 clients (les clients de votre agence Swiftflow — swiftflow.agency). Elle
-présente les 5 agents et trois formules (constante `PLANS` dans
+présente les 6 agents et trois formules (constante `PLANS` dans
 `lib/plans.ts`, partagée avec le dashboard) :
 
-- **Content — 79 €/mois — 40 crédits/mois** : Margaux (Créateur de Contenu)
-  + Romy (Designer).
+- **Content — 79 €/mois — 40 crédits/mois** : Noé (Manager) + Margaux
+  (Créateur de Contenu) + Romy (Designer).
 - **Marketing — 149 €/mois — 60 crédits/mois** (mise en avant "Plus
   populaire") : + Adèle (Stratège).
-- **Équipe Complète — 249 €/mois — 100 crédits/mois** : les 5 agents, avec
+- **Équipe Complète — 249 €/mois — 100 crédits/mois** : les 6 agents, avec
   en plus rapports mensuels, analyse des performances, plan d'action mensuel
   et présentations synthétiques (Sacha + Élio).
+
+Chaque offre inclut en plus des **frais de mise en place de
+`SETUP_FEE` = 150 €**, facturés une seule fois avec le premier mois
+d'abonnement (constante dans `lib/plans.ts`, affichée sous le prix de chaque
+offre et expliquée dans la FAQ).
 
 Les boutons "Demander cette offre" ouvrent un email pré-rempli vers
 `CONTACT_EMAIL` (constante en haut de `app/page.tsx`, actuellement
 `contact@swiftflow.agency`) — il n'y a pas encore de paiement en ligne
 (Stripe), voir Roadmap. Le nom affiché ("Swiftflow") est une constante
 `AGENCY_NAME` dans le même fichier.
+
+### Logo
+
+Le logo officiel (`public/swiftflow-logo.png`) est affiché via le composant
+`components/Logo.tsx` (utilisé dans tous les en-têtes — page d'accueil et
+portail client). Pour le remplacer, dépose le nouveau fichier au même chemin
+en gardant le même nom (ou mets à jour le chemin dans `Logo.tsx`).
+
+### Agents support sur devis
+
+Une section de la page d'accueil ("Sur devis") met en avant des agents
+additionnels disponibles sur demande — boîte mail, calls, prospection —
+configurés au cas par cas (pas de logique applicative derrière, c'est une
+section marketing avec un lien "Demander un devis" vers `CONTACT_EMAIL`).
 
 ### Activer/désactiver des agents par client
 
@@ -206,14 +225,15 @@ page.
 ## 5. Le portail client — un espace par agent
 
 Depuis cette version, le lien de portail (`/portal/{token}`) n'ouvre plus une
-simple liste de livrables : c'est un **hub** présentant les 5 agents comme une
+simple liste de livrables : c'est un **hub** présentant les agents activés comme une
 équipe, chacun avec un prénom :
 
 | Agent (rôle)        | Prénom   | Sortie spécifique     |
 | -------------------- | -------- | ---------------------- |
+| Manager (Sonnet)      | Noé      | Coordination            |
 | Stratège (Opus)      | Adèle    | Briefs                  |
 | Créateur de Contenu (Sonnet) | Margaux | Posts & carrousels |
-| Designer (Sonnet)    | Romy     | Visuels                 |
+| Designer (Sonnet + gpt-image-1) | Romy | Visuels             |
 | Analyste (Opus)       | Sacha    | Rapports                |
 | Présentateur (Sonnet) | Élio    | Decks                   |
 
@@ -221,18 +241,27 @@ simple liste de livrables : c'est un **hub** présentant les 5 agents comme une
 > change-les librement, ils ne sont utilisés que côté affichage (les clés
 > internes `strategiste`/`createur-contenu`/etc. ne changent pas).
 
+**Noé (Manager)** est un peu particulier : il n'a pas de formulaire de
+génération structuré comme les autres. Son rôle est de donner une vue
+d'ensemble — il reçoit les 8 derniers livrables du client (tous agents
+confondus) en contexte et produit un "point d'équipe" : avancement récent,
+priorités proposées, et recommandation sur quel agent solliciter ensuite.
+C'est le point d'entrée naturel pour un client qui ne sait pas par où
+commencer.
+
 En cliquant sur un agent, le client arrive dans son **espace de travail** :
 une fiche de présentation (statut, rôle, nombre de livrables produits,
 dernière activité), puis 5 onglets — **Chat**, un onglet de sortie propre à
-l'agent (Briefs / Posts & carrousels / Visuels / Rapports / Decks),
-**Analytics**, **Fichiers** et **Historique**.
+l'agent (Coordination / Briefs / Posts & carrousels / Visuels / Rapports /
+Decks), **Analytics**, **Fichiers** et **Historique**.
 
 ### Chat (v1)
 
 Le client peut écrire une demande en langage libre ("écris-moi un carrousel
 sur notre nouvelle collection"). L'agent répond en s'appuyant sur le profil
-du client et ses 2 derniers livrables, et le résultat est enregistré comme un
-nouveau livrable (statut "brouillon") — visible immédiatement dans Fichiers et
+du client et ses 2 derniers livrables (8 pour Noé/Manager, pour une vue
+d'équipe plus large), et le résultat est enregistré comme un nouveau
+livrable (statut "brouillon") — visible immédiatement dans Fichiers et
 Historique.
 
 **Limite connue (v1)** : chaque message est traité indépendamment — il n'y a
@@ -240,9 +269,9 @@ pas encore d'historique de conversation persistant avec mémoire des échanges
 précédents dans le même fil. C'est la prochaine étape (voir Roadmap).
 
 **Coût** : chaque message envoyé par un client déclenche un appel à l'API
-Anthropic, facturé sur ta clé. Il n'y a pas encore de limite de générations
-par client/mois — à mettre en place avant un usage en production avec des
-clients externes (voir Roadmap).
+Anthropic (et, pour Romy/Designer, un appel à l'API OpenAI), facturés sur tes
+clés. Le système de crédits (section 4 ci-dessus) limite ce coût par client
+et par mois selon son offre.
 
 ### Analytics (v1)
 

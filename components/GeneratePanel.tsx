@@ -36,6 +36,25 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
         <input type="hidden" name="clientId" value={clientId} />
         <input type="hidden" name="agent" value={agent} />
 
+        {agent === "manager" && (
+          <div>
+            <p className="text-sm text-ink/50 mb-2">
+              Noé fait le point sur les 8 derniers livrables de l&apos;équipe
+              (tous agents confondus) et propose des priorités.
+            </p>
+            <label className="block text-sm font-medium mb-1" htmlFor="demande">
+              Demande (optionnel)
+            </label>
+            <textarea
+              id="demande"
+              name="demande"
+              rows={2}
+              placeholder="Laisse vide pour un point d'équipe général"
+              className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
+            />
+          </div>
+        )}
+
         {agent === "strategiste" && (
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="objectif">

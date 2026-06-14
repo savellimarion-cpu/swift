@@ -1,6 +1,8 @@
 import type { Client, Deliverable } from "@prisma/client";
 import type { AgentType } from "./index";
 import { clientContextBlock, deliverableSourceBlock } from "./context";
+import { deliverableContextSummary } from "@/lib/image-deliverable";
+import { SYSTEM_PROMPT as MANAGER_PROMPT } from "./manager";
 import { SYSTEM_PROMPT as STRATEGISTE_PROMPT } from "./strategiste";
 import { SYSTEM_PROMPT as CREATEUR_PROMPT } from "./createur-contenu";
 import { BRIEF_SYSTEM_PROMPT as DESIGNER_PROMPT } from "./designer";
@@ -11,6 +13,7 @@ import { SYSTEM_PROMPT as PRESENTATEUR_PROMPT } from "./presentateur";
 // brief JSON -> génération d'image), il ne passe jamais par buildChatPrompt
 // ci-dessous. L'entrée est conservée pour la complétude du type Record.
 const SYSTEM_PROMPTS: Record<AgentType, string> = {
+  manager: MANAGER_PROMPT,
   strategiste: STRATEGISTE_PROMPT,
   "createur-contenu": CREATEUR_PROMPT,
   designer: DESIGNER_PROMPT,
@@ -19,6 +22,7 @@ const SYSTEM_PROMPTS: Record<AgentType, string> = {
 };
 
 export const AGENT_MODEL: Record<AgentType, "opus" | "sonnet"> = {
+  manager: "sonnet",
   strategiste: "opus",
   "createur-contenu": "sonnet",
   designer: "sonnet",
@@ -42,7 +46,12 @@ export function buildChatPrompt(
   const recentBlock =
     recent.length > 0
       ? recent
-          .map((d) => deliverableSourceBlock(`Livrable récent — "${d.title}"`, d))
+          .map((d) =>
+            deliverableSourceBlock(
+              `Livrable récent — ${d.agent} — "${d.title}" (${d.status})`,
+              deliverableContextSummary(d)
+            )
+          )
           .join("\n\n")
       : "### Livrables récents\nAucun disponible.";
 

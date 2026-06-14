@@ -88,7 +88,9 @@ export async function sendAgentMessageAction(
   const recent = await prisma.deliverable.findMany({
     where: { clientId: client.id },
     orderBy: { createdAt: "desc" },
-    take: 2,
+    // Noé (Manager) a besoin d'une vue d'ensemble sur l'équipe ; les autres
+    // agents se contentent d'un peu de contexte récent.
+    take: agentId === "manager" ? 8 : 2,
   });
 
   let content: string;

@@ -23,7 +23,7 @@ export default function AgentPersonaPanel({
         <Icon size={26} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
       </div>
 
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
         <span className="text-xs border border-forest text-forest rounded-full px-2 py-0.5 flex items-center gap-1">
           <span className="w-1.5 h-1.5 rounded-full bg-forest inline-block" />
           en ligne
@@ -31,6 +31,11 @@ export default function AgentPersonaPanel({
         <span className="font-mono text-xs border border-line text-ink/60 rounded-full px-2 py-0.5">
           {agent.model.toLowerCase()}
         </span>
+        {agent.tools?.map((tool) => (
+          <span key={tool} className="font-mono text-xs border border-line text-ink/60 rounded-full px-2 py-0.5">
+            {tool}
+          </span>
+        ))}
       </div>
 
       <div className={`font-mono text-[11px] uppercase tracking-widest mb-1 ${ACCENT_TEXT[agent.accent]}`}>

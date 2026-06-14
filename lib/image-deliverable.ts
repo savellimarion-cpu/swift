@@ -56,3 +56,28 @@ export function parseImageBrief(raw: string): ImageBrief {
   }
   return { title: p.title, format: p.format, prompt: p.prompt };
 }
+
+/**
+ * Représentation {title, content} d'un livrable adaptée à l'inclusion dans
+ * un prompt : pour les visuels du Designer (kind "image"), remplace le JSON
+ * (qui contient une data URL base64 de plusieurs centaines de Ko) par un
+ * résumé textuel léger. Pour tout autre livrable, renvoie title/content
+ * inchangés.
+ */
+export function deliverableContextSummary(d: {
+  agent: string;
+  kind: string | null;
+  title: string;
+  content: string;
+}): { title: string; content: string } {
+  if (d.agent === "designer" && d.kind === "image") {
+    const img = parseImageDeliverable(d.content);
+    if (img) {
+      return {
+        title: d.title,
+        content: `Visuel généré (format ${img.format}) — ${img.title}. Description : ${img.prompt}`,
+      };
+    }
+  }
+  return { title: d.title, content: d.content };
+}

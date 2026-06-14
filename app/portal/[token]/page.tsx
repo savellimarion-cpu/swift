@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { enabledAgentsMeta, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_GLOW } from "@/lib/agents";
 import { relativeTimeFr } from "@/lib/format";
 import AmbientBlobs from "@/components/AmbientBlobs";
+import Logo from "@/components/Logo";
 
 export default async function PortalHubPage({
   params,
@@ -33,9 +34,7 @@ export default async function PortalHubPage({
       <AmbientBlobs />
       <header className="sticky top-0 z-40 border-b border-line bg-paper/75 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
-          <span className="font-mono text-sm font-semibold tracking-tight">
-            Swiftflow<span className="text-turquoise">.</span>
-          </span>
+          <Logo />
           <span className="font-mono text-xs text-ink/40">portail client</span>
         </div>
       </header>

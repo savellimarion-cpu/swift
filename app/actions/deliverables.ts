@@ -7,7 +7,8 @@ import { requireClient } from "@/lib/auth";
 import { callClaude, type ClaudeCallOptions } from "@/lib/anthropic";
 import { generateImage, FORMAT_TO_SIZE } from "@/lib/openai";
 import { checkCreditLimit } from "@/lib/limits";
-import { parseImageBrief, serializeImageDeliverable, parseImageDeliverable } from "@/lib/image-deliverable";
+import { parseImageBrief, serializeImageDeliverable, deliverableContextSummary } from "@/lib/image-deliverable";
+import * as manager from "@/lib/agents/manager";
 import * as strategiste from "@/lib/agents/strategiste";
 import * as createurContenu from "@/lib/agents/createur-contenu";
 import * as designer from "@/lib/agents/designer";
@@ -49,15 +50,7 @@ async function gatherDeckSources(clientId: string) {
   // Les livrables "image" du Designer stockent un JSON avec une data URL
   // (base64, plusieurs centaines de Ko) — on la remplace par un résumé
   // textuel léger avant de l'inclure dans le prompt du Présentateur.
-  return sources.map((d) => {
-    if (d.agent === "designer" && d.kind === "image") {
-      const img = parseImageDeliverable(d.content);
-      if (img) {
-        return { ...d, content: `Visuel généré (format ${img.format}) — ${img.title}. Description : ${img.prompt}` };
-      }
-    }
-    return d;
-  });
+  return sources.map((d) => ({ ...d, content: deliverableContextSummary(d).content }));
 }
 
 export async function generateDeliverableAction(
@@ -122,6 +115,18 @@ export async function generateDeliverableAction(
   let kind: string | null = null;
 
   switch (agent) {
+    case "manager": {
+      const demande = String(formData.get("demande") ?? "").trim();
+      const recent = await prisma.deliverable.findMany({
+        where: { clientId },
+        orderBy: { createdAt: "desc" },
+        take: 8,
+      });
+      call = manager.buildSynthesePrompt(client, recent, demande);
+      title = manager.defaultTitle(demande);
+      break;
+    }
+
     case "strategiste": {
       const objectif = String(formData.get("objectif") ?? "").trim();
       if (!objectif) return { error: "L'objectif de campagne est requis." };
