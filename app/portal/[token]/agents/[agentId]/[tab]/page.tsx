@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getAgentMeta } from "@/lib/agents";
+import { MONTHLY_VISUAL_LIMIT, visualsGeneratedThisMonth } from "@/lib/limits";
 import ChatTab from "@/components/portal/ChatTab";
 import OutputTab from "@/components/portal/OutputTab";
 import AnalyticsTab from "@/components/portal/AnalyticsTab";
@@ -17,12 +18,19 @@ export default async function AgentWorkspaceTabPage({
   const agent = getAgentMeta(agentId);
   if (!agent) notFound();
 
-  if (tab === "chat") {
-    return <ChatTab token={token} agentId={agent.id} />;
-  }
-
   const client = await prisma.client.findUnique({ where: { portalToken: token } });
   if (!client) notFound();
+
+  if (tab === "chat") {
+    const quota =
+      agent.id === "designer"
+        ? {
+            used: await visualsGeneratedThisMonth(client.id),
+            limit: MONTHLY_VISUAL_LIMIT,
+          }
+        : undefined;
+    return <ChatTab token={token} agentId={agent.id} quota={quota} />;
+  }
 
   const deliverables = await prisma.deliverable.findMany({
     where: { clientId: client.id, agent: agent.id },

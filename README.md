@@ -134,10 +134,15 @@ fois déployé.
 
 La page `/` (racine du site) est **votre tunnel de vente**, adressé à vos
 clients (les clients de votre agence Swiftflow — swiftflow.agency). Elle
-présente les 5 agents et deux formules :
+présente les 5 agents et trois formules (constante `PLANS` dans
+`app/page.tsx`) :
 
-- **Essentiel — 59 €/mois** : le client choisit 1 ou 2 agents.
-- **Premium — 199 €/mois** : accès aux 5 agents.
+- **Content — 79 €/mois** : Margaux (Créateur de Contenu) + Romy (Designer).
+- **Marketing — 149 €/mois** (mise en avant "Plus populaire") : + Adèle
+  (Stratège).
+- **Équipe Complète — 249 €/mois** : les 5 agents, avec en plus rapports
+  mensuels, analyse des performances, plan d'action mensuel et présentations
+  synthétiques (Sacha + Élio).
 
 Les boutons "Demander cette offre" ouvrent un email pré-rempli vers
 `CONTACT_EMAIL` (constante en haut de `app/page.tsx`, actuellement
@@ -148,10 +153,11 @@ Les boutons "Demander cette offre" ouvrent un email pré-rempli vers
 ### Activer/désactiver des agents par client
 
 Une fois qu'un client a choisi son offre, ouvre sa page dans `/dashboard` →
-section **"Accès aux agents"** → coche les agents correspondants (1-2 pour
-Essentiel, les 5 pour Premium) et enregistre. C'est stocké dans
-`Client.enabledAgents` (liste d'IDs séparés par des virgules ; vide ou non
-renseigné = tous activés, pour rester compatible avec les clients existants).
+section **"Accès aux agents"** → coche les agents correspondants à sa
+formule (Content / Marketing / Équipe Complète, cf. `PLANS` ci-dessus) et
+enregistre. C'est stocké dans `Client.enabledAgents` (liste d'IDs séparés
+par des virgules ; vide ou non renseigné = tous activés, pour rester
+compatible avec les clients existants).
 
 Effet côté portail client :
 - Le hub (`/portal/{token}`) n'affiche que les agents activés.
@@ -160,6 +166,23 @@ Effet côté portail client :
   repasser par le hub.
 - Ouvrir directement l'URL d'un agent désactivé renvoie une page 404.
 - Envoyer un message à un agent désactivé (chat) renvoie une erreur.
+
+### Limites anti-abus
+
+Deux limites protègent contre une consommation excessive (et la facture
+Anthropic qui va avec) :
+
+- **Visuels (Romy/Designer) : 40/mois par client** — constante
+  `MONTHLY_VISUAL_LIMIT` dans `lib/limits.ts` (ajustable entre 30 et 40).
+  Le compteur se réinitialise le 1er de chaque mois (basé sur
+  `Deliverable.createdAt`). Le client voit son quota dans l'onglet Chat de
+  Romy ("Visuels ce mois-ci : X / 40") ; au-delà, le formulaire se désactive
+  avec un message d'explication. La même limite s'applique au panneau
+  "Générer un livrable" côté agence.
+- **Carrousels (Margaux/Créateur de Contenu) : 5 slides maximum** — règle
+  dans le prompt système (`lib/agents/createur-contenu.ts`), pas une
+  contrainte technique : si l'agent dérive, ajuste le prompt plutôt que
+  d'ajouter une validation a posteriori.
 
 Le lien `/login` (accès agence) n'est plus mis en avant sur la page
 d'accueil — il reste accessible via le petit lien "Espace agence" en bas de

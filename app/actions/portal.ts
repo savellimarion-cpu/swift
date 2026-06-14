@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { callClaude } from "@/lib/anthropic";
 import { buildChatPrompt, chatDefaultTitle } from "@/lib/agents/chat";
 import { getAgentMeta, enabledAgentIds, type AgentType } from "@/lib/agents";
+import { checkVisualLimit } from "@/lib/limits";
 
 export interface PortalChatState {
   error?: string;
@@ -35,6 +36,11 @@ export async function sendAgentMessageAction(
 
   if (!enabledAgentIds(client.enabledAgents).includes(agentId)) {
     return { error: "Cet agent n'est pas activé pour votre espace." };
+  }
+
+  if (agentId === "designer") {
+    const limitError = await checkVisualLimit(client.id);
+    if (limitError) return { error: limitError };
   }
 
   const recent = await prisma.deliverable.findMany({

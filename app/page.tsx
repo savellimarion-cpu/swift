@@ -184,7 +184,7 @@ function HowItWorks() {
   const steps = [
     {
       title: "Choisissez votre formule",
-      body: "Un ou deux agents pour démarrer, ou l'équipe complète — selon vos besoins du moment. Vous pouvez évoluer à tout moment.",
+      body: "Content, Marketing ou Équipe Complète — selon vos besoins du moment. Vous pouvez évoluer à tout moment.",
     },
     {
       title: "Briefez vos agents par chat",
@@ -218,14 +218,50 @@ function HowItWorks() {
   );
 }
 
-function Pricing() {
-  const essentielHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    "Offre Essentiel — " + AGENCY_NAME
-  )}`;
-  const premiumHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    "Offre Premium — " + AGENCY_NAME
-  )}`;
+interface Plan {
+  name: string;
+  price: number;
+  subtitle: string;
+  agentIds: AgentType[];
+  extras: string[];
+  result: string;
+  featured?: boolean;
+}
 
+const PLANS: Plan[] = [
+  {
+    name: "Content",
+    price: 79,
+    subtitle: "Pour les entreprises qui savent déjà quoi communiquer.",
+    agentIds: ["createur-contenu", "designer"],
+    extras: [],
+    result: "création de posts, carrousels, emails, visuels.",
+  },
+  {
+    name: "Marketing",
+    price: 149,
+    subtitle: "Pour les entreprises qui veulent aussi une direction.",
+    agentIds: ["strategiste", "createur-contenu", "designer"],
+    extras: [],
+    result: "stratégie + contenu + visuels.",
+    featured: true,
+  },
+  {
+    name: "Équipe Complète",
+    price: 249,
+    subtitle: "Le département marketing complet.",
+    agentIds: ["strategiste", "createur-contenu", "designer", "analyste", "presentateur"],
+    extras: [
+      "Rapports mensuels",
+      "Analyse des performances",
+      "Plan d'action mensuel",
+      "Présentations synthétiques",
+    ],
+    result: "une équipe marketing IA complète.",
+  },
+];
+
+function Pricing() {
   return (
     <section id="offres" className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
       <Reveal>
@@ -233,66 +269,80 @@ function Pricing() {
           Tarifs
         </h2>
         <h3 className="text-2xl mb-8 max-w-lg">
-          Deux formules, simples.
+          Trois formules, selon votre besoin.
         </h3>
       </Reveal>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <Reveal>
-        <div className="bg-white border border-line rounded-sm p-6 md:p-8 h-full">
-          <div className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">
-            Essentiel
-          </div>
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-3xl font-semibold">59 €</span>
-            <span className="text-ink/50 text-sm">/ mois</span>
-          </div>
-          <p className="text-sm text-ink/60 leading-relaxed mb-5">
-            Choisissez 1 ou 2 agents — par exemple votre créateur de contenu
-            et votre designer — pour démarrer simplement.
-          </p>
-          <ul className="text-sm text-ink/70 space-y-2 mb-6">
-            <li>• 1 ou 2 agents au choix</li>
-            <li>• Conversations illimitées avec vos agents</li>
-            <li>• Mémoire de marque configurée par notre équipe</li>
-            <li>• Tous vos contenus accessibles dans votre espace</li>
-          </ul>
-          <a
-            href={essentielHref}
-            className="block text-center border border-ink text-ink px-5 py-2.5 rounded-sm hover:bg-ink hover:text-paper transition-colors font-medium"
-          >
-            Demander cette offre
-          </a>
-        </div>
-        </Reveal>
+      <div className="grid md:grid-cols-3 gap-6">
+        {PLANS.map((plan, i) => {
+          const href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+            `Offre ${plan.name} — ${AGENCY_NAME}`
+          )}`;
+          return (
+            <Reveal key={plan.name} delay={i * 100}>
+              <div
+                className={`relative bg-white rounded-sm p-6 md:p-8 h-full transition-all ${
+                  plan.featured
+                    ? "border-2 border-turquoise hover:-translate-y-1 hover:shadow-sm"
+                    : "border border-line"
+                }`}
+              >
+                {plan.featured && (
+                  <span className="absolute -top-3 left-6 bg-turquoise text-white font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded-sm">
+                    Plus populaire
+                  </span>
+                )}
+                <div
+                  className={`font-mono text-xs uppercase tracking-widest mb-2 ${
+                    plan.featured ? "text-turquoise" : "text-ink/40"
+                  }`}
+                >
+                  {plan.name}
+                </div>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-3xl font-semibold">{plan.price} €</span>
+                  <span className="text-ink/50 text-sm">/ mois</span>
+                </div>
+                <p className="text-sm text-ink/60 leading-relaxed mb-5">{plan.subtitle}</p>
 
-        <Reveal delay={120}>
-        <div className="bg-white border-2 border-turquoise rounded-sm p-6 md:p-8 h-full hover:-translate-y-1 hover:shadow-sm transition-all">
-          <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-2">
-            Premium
-          </div>
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-3xl font-semibold">199 €</span>
-            <span className="text-ink/50 text-sm">/ mois</span>
-          </div>
-          <p className="text-sm text-ink/60 leading-relaxed mb-5">
-            Toute l&apos;équipe à votre service : stratégie, contenu, visuels,
-            analyse et présentations.
-          </p>
-          <ul className="text-sm text-ink/70 space-y-2 mb-6">
-            <li>• Les 5 agents — {AGENTS.map((a) => a.name).join(", ")}</li>
-            <li>• Conversations illimitées avec toute l&apos;équipe</li>
-            <li>• Rapport mensuel de performance et plan d&apos;action</li>
-            <li>• Mémoire de marque configurée et tenue à jour par notre équipe</li>
-          </ul>
-          <a
-            href={premiumHref}
-            className="block text-center bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 hover:scale-[1.02] transition-all font-medium"
-          >
-            Demander cette offre
-          </a>
-        </div>
-        </Reveal>
+                <div className="font-mono text-[11px] uppercase tracking-widest text-ink/40 mb-2">
+                  Inclus
+                </div>
+                <ul className="text-sm text-ink/70 space-y-2 mb-6">
+                  {plan.agentIds.map((id) => {
+                    const a = AGENTS.find((x) => x.id === id)!;
+                    return (
+                      <li key={id}>
+                        • {a.name} ({a.role})
+                      </li>
+                    );
+                  })}
+                  <li>• Conversations illimitées</li>
+                  <li>• Mémoire de marque</li>
+                  {plan.extras.map((extra) => (
+                    <li key={extra}>• {extra}</li>
+                  ))}
+                </ul>
+
+                <p className="text-sm text-ink/60 leading-relaxed mb-6">
+                  <span className="font-medium text-ink">Résultat : </span>
+                  {plan.result}
+                </p>
+
+                <a
+                  href={href}
+                  className={`block text-center px-5 py-2.5 rounded-sm font-medium transition-all ${
+                    plan.featured
+                      ? "bg-ink text-paper hover:bg-ink/85 hover:scale-[1.02]"
+                      : "border border-ink text-ink hover:bg-ink hover:text-paper"
+                  }`}
+                >
+                  Demander cette offre
+                </a>
+              </div>
+            </Reveal>
+          );
+        })}
       </div>
 
       <p className="text-sm text-ink/40 mt-6">

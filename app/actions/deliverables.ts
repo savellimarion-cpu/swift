@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireClient } from "@/lib/auth";
 import { callClaude, type ClaudeCallOptions } from "@/lib/anthropic";
+import { checkVisualLimit } from "@/lib/limits";
 import * as strategiste from "@/lib/agents/strategiste";
 import * as createurContenu from "@/lib/agents/createur-contenu";
 import * as designer from "@/lib/agents/designer";
@@ -80,6 +81,9 @@ export async function generateDeliverableAction(
     }
 
     case "designer": {
+      const limitError = await checkVisualLimit(clientId);
+      if (limitError) return { error: limitError };
+
       const brief = await prisma.deliverable.findFirst({
         where: { clientId, agent: "strategiste" },
         orderBy: { createdAt: "desc" },

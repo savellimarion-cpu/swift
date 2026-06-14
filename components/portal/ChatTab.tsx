@@ -8,15 +8,41 @@ import SubmitButton from "@/components/SubmitButton";
 
 const initialState: PortalChatState = {};
 
-export default function ChatTab({ token, agentId }: { token: string; agentId: AgentType }) {
+export default function ChatTab({
+  token,
+  agentId,
+  quota,
+}: {
+  token: string;
+  agentId: AgentType;
+  quota?: { used: number; limit: number };
+}) {
   const agent = getAgentMeta(agentId);
   const [state, formAction] = useActionState(sendAgentMessageAction, initialState);
   const [message, setMessage] = useState("");
 
   if (!agent) return null;
 
+  const quotaReached = quota ? quota.used >= quota.limit : false;
+
   return (
     <div>
+      {quota && (
+        <div
+          className={`mb-4 flex items-center justify-between rounded-sm border px-3 py-2 text-xs font-mono ${
+            quotaReached
+              ? "border-clay/40 bg-clay/10 text-clay"
+              : "border-line bg-white text-ink/50"
+          }`}
+        >
+          <span>
+            {quotaReached
+              ? `Limite mensuelle atteinte (${quota.limit} visuels) — réinitialisation au début du mois prochain.`
+              : `Visuels ce mois-ci : ${quota.used} / ${quota.limit}`}
+          </span>
+        </div>
+      )}
+
       <div className="bg-white border border-line rounded-sm p-8 mb-4 flex flex-col items-center text-center">
         <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${ACCENT_SOFT_BG[agent.accent]}`}>
           <Sparkles size={22} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
@@ -47,14 +73,15 @@ export default function ChatTab({ token, agentId }: { token: string; agentId: Ag
           name="message"
           rows={3}
           required
+          disabled={quotaReached}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Demandez à ${agent.name}… (Entrée pour envoyer, Maj+Entrée pour retour à la ligne)`}
-          className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
+          className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40 disabled:bg-paper disabled:text-ink/40"
         />
         {state.error && <p className="text-sm text-clay">{state.error}</p>}
         <div className="flex justify-end">
-          <SubmitButton pendingLabel={`${agent.name} travaille…`} className="flex items-center gap-2">
+          <SubmitButton pendingLabel={`${agent.name} travaille…`} className="flex items-center gap-2" disabled={quotaReached}>
             <Send size={14} aria-hidden="true" />
             Envoyer
           </SubmitButton>
