@@ -3,6 +3,9 @@
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { callClaude } from "@/lib/anthropic";
+import { generateImage, FORMAT_TO_SIZE } from "@/lib/openai";
+import { parseImageBrief, serializeImageDeliverable } from "@/lib/image-deliverable";
+import * as designer from "@/lib/agents/designer";
 import { buildChatPrompt, chatDefaultTitle } from "@/lib/agents/chat";
 import { getAgentMeta, enabledAgentIds, type AgentType } from "@/lib/agents";
 import { checkVisualLimit } from "@/lib/limits";
@@ -41,6 +44,45 @@ export async function sendAgentMessageAction(
   if (agentId === "designer") {
     const limitError = await checkVisualLimit(client.id);
     if (limitError) return { error: limitError };
+
+    const [brief, contentPiece] = await Promise.all([
+      prisma.deliverable.findFirst({
+        where: { clientId: client.id, agent: "strategiste" },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.deliverable.findFirst({
+        where: { clientId: client.id, agent: "createur-contenu" },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
+    let spec;
+    try {
+      const raw = await callClaude(designer.buildImageBriefPrompt(client, brief, contentPiece, message));
+      spec = parseImageBrief(raw);
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+
+    let dataUrl: string;
+    try {
+      dataUrl = await generateImage(spec.prompt, FORMAT_TO_SIZE[spec.format] ?? "1024x1024");
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+
+    const deliverable = await prisma.deliverable.create({
+      data: {
+        clientId: client.id,
+        agent: "designer",
+        kind: "image",
+        title: spec.title,
+        content: serializeImageDeliverable({ ...spec, dataUrl }),
+        status: "brouillon",
+      },
+    });
+
+    redirect(`/portal/${token}/${deliverable.id}`);
   }
 
   const recent = await prisma.deliverable.findMany({

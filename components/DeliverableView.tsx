@@ -2,6 +2,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Deliverable } from "@prisma/client";
 import DeckView from "@/components/DeckView";
+import ImageDeliverableView from "@/components/ImageDeliverableView";
+import { parseImageDeliverable } from "@/lib/image-deliverable";
 import { updateDeliverableStatusAction } from "@/app/actions/deliverables";
 
 const STATUSES = ["brouillon", "validé", "publié"];
@@ -57,13 +59,22 @@ export default function DeliverableView({
         )}
       </div>
 
-      {deliverable.agent === "presentateur" ? (
-        <DeckView content={deliverable.content} title={deliverable.title} />
-      ) : (
-        <article className="markdown-body bg-white border border-line rounded-sm p-6 md:p-8">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{deliverable.content}</ReactMarkdown>
-        </article>
-      )}
+      {(() => {
+        if (deliverable.agent === "presentateur") {
+          return <DeckView content={deliverable.content} title={deliverable.title} />;
+        }
+        if (deliverable.agent === "designer" && deliverable.kind === "image") {
+          const image = parseImageDeliverable(deliverable.content);
+          if (image) {
+            return <ImageDeliverableView image={image} title={deliverable.title} />;
+          }
+        }
+        return (
+          <article className="markdown-body bg-white border border-line rounded-sm p-6 md:p-8">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{deliverable.content}</ReactMarkdown>
+          </article>
+        );
+      })()}
     </div>
   );
 }

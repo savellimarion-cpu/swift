@@ -268,6 +268,26 @@ roadmap), mais le modèle de données (`Account` → `Client` →
 `Deliverable`) permet de compter facilement les générations par compte et
 par période.
 
+### Génération d'images (Romy / Designer)
+
+Chaque visuel = 1 appel Claude (le "brief" — léger) + 1 appel OpenAI
+gpt-image-1 (génération de l'image — c'est le coût principal, de l'ordre de
+quelques centimes par image en qualité "medium"). La limite de
+`MONTHLY_VISUAL_LIMIT` (40/mois/client, `lib/limits.ts`) plafonne ce coût.
+
+**Accès gpt-image-1** : ce modèle nécessite parfois une vérification
+d'organisation sur la plateforme OpenAI (Settings → Organization →
+Verification) avant de pouvoir l'utiliser via l'API — si tu obtiens une
+erreur 403 "organization not verified" au premier essai, c'est cette étape
+qu'il faut faire.
+
+**Stockage** : les images sont stockées en base (data URL base64 dans
+`Deliverable.content`) — simple, aucun service supplémentaire à configurer,
+mais ça fait grossir la base Postgres (~200-600 Ko par image en JPEG
+qualité moyenne). Pour un usage avec plusieurs clients actifs sur la durée,
+prévoir de migrer vers un stockage de fichiers (Vercel Blob, S3...) — voir
+roadmap.
+
 ---
 
 ## 7. Déploiement
@@ -354,3 +374,8 @@ fonctionne très bien en production pour un usage agence/petite équipe).
   `lib/agents/index.ts` (`AGENTS`) + un module `lib/agents/<id>.ts` par
   agent — la structure (espace, onglets, accès par client) s'applique sans
   changement.
+- **Stockage des visuels** : actuellement en base (data URL). Migrer vers
+  Vercel Blob (ou S3/Cloudinary) une fois le volume significatif —
+  `lib/openai.ts` (renvoie la data URL) et `lib/image-deliverable.ts`
+  (format stocké) sont les deux points à adapter ; `dataUrl` deviendrait une
+  URL externe, le reste (affichage, téléchargement) ne change pas.

@@ -3,10 +3,13 @@ import type { AgentType } from "./index";
 import { clientContextBlock, deliverableSourceBlock } from "./context";
 import { SYSTEM_PROMPT as STRATEGISTE_PROMPT } from "./strategiste";
 import { SYSTEM_PROMPT as CREATEUR_PROMPT } from "./createur-contenu";
-import { SYSTEM_PROMPT as DESIGNER_PROMPT } from "./designer";
+import { BRIEF_SYSTEM_PROMPT as DESIGNER_PROMPT } from "./designer";
 import { SYSTEM_PROMPT as ANALYSTE_PROMPT } from "./analyste";
 import { SYSTEM_PROMPT as PRESENTATEUR_PROMPT } from "./presentateur";
 
+// Note : "designer" est traité à part dans sendAgentMessageAction (pipeline
+// brief JSON -> génération d'image), il ne passe jamais par buildChatPrompt
+// ci-dessous. L'entrée est conservée pour la complétude du type Record.
 const SYSTEM_PROMPTS: Record<AgentType, string> = {
   strategiste: STRATEGISTE_PROMPT,
   "createur-contenu": CREATEUR_PROMPT,

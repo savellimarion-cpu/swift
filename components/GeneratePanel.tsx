@@ -87,11 +87,23 @@ export default function GeneratePanel({ clientId }: { clientId: string }) {
         )}
 
         {agent === "designer" && (
-          <p className="text-sm text-ink/50">
-            Le Designer s&apos;appuie automatiquement sur le brief et les
-            pièces de contenu les plus récents de ce client pour produire son
-            pack de prompts images.
-          </p>
+          <div>
+            <p className="text-sm text-ink/50 mb-2">
+              Romy génère directement un visuel prêt à poster (image), en
+              s&apos;appuyant sur le brief et la pièce de contenu les plus
+              récents de ce client.
+            </p>
+            <label className="block text-sm font-medium mb-1" htmlFor="instruction">
+              Précisions (optionnel)
+            </label>
+            <textarea
+              id="instruction"
+              name="instruction"
+              rows={2}
+              placeholder="Laisse vide pour laisser Romy choisir d'après le contenu le plus récent"
+              className="w-full border border-line rounded-sm px-3 py-2 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-turquoise/40"
+            />
+          </div>
         )}
 
         {agent === "analyste" && (

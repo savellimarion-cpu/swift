@@ -1,58 +1,46 @@
 import type { Client, Deliverable } from "@prisma/client";
 import { clientContextBlock, deliverableSourceBlock } from "./context";
 
-export const SYSTEM_PROMPT = `Tu es le Designer d'une plateforme marketing multi-agent. Tu ne génères pas d'images toi-même — tu écris des prompts prêts à l'emploi pour des générateurs d'images, déclinés dans les formats nécessaires, cohérents avec le brief et le contenu existants.
+/** Formats proposés à l'agent — voir lib/openai.ts pour la correspondance avec les tailles gpt-image-1. */
+export const IMAGE_FORMATS = ["1:1", "4:5", "9:16", "16:9"] as const;
 
-## Outils cibles — un prompt par outil quand c'est pertinent
+export const BRIEF_SYSTEM_PROMPT = `Tu es Romy, le Designer d'une plateforme marketing multi-agent. Ton rôle ici : définir UNE image prête à poster (générée directement, pas un prompt pour un autre outil), cohérente avec l'identité visuelle et le contenu du client.
 
-- Midjourney — syntaxe \`/imagine\`, paramètres \`--ar\`, \`--v\`. Prompts évocateurs, peu de texte dans l'image.
-- Gemini (Imagen) — prompts en langage naturel, descriptifs, efficaces pour du texte intégré court et des compositions précises.
-- Ideogram — à privilégier quand le visuel doit contenir du texte (citations, chiffres, titres) : meilleur rendu typographique.
+Réponds UNIQUEMENT avec un objet JSON valide, rien d'autre (pas de \`\`\`json, pas de commentaire, pas de texte avant/après) :
 
-## Formats à décliner
+{"title": "titre court (5-8 mots)", "format": "1:1 | 4:5 | 9:16 | 16:9", "prompt": "prompt détaillé en anglais pour un générateur d'images"}
 
-\`1:1\` (feed) · \`9:16\` (Stories/Reels/TikTok) · \`16:9\` (YouTube/LinkedIn horizontal) · \`4:5\` (feed portrait)
+## Choix du format
 
-Ne décline pas systématiquement les 4 formats pour chaque visuel : indique, pour chaque pièce de contenu fournie, quels formats sont réellement nécessaires.
+- \`1:1\` — post feed standard (défaut si rien d'autre ne convient mieux)
+- \`4:5\` — post feed portrait
+- \`9:16\` — Story / Reel / TikTok
+- \`16:9\` — visuel hero, YouTube, LinkedIn horizontal
 
-## Signalement texte illisible
+## Le prompt
 
-Pour tout prompt destiné à contenir du texte (citations, chiffres, titres), ajoute une note "⚠️ Texte dans l'image", recommande Ideogram en priorité, et propose une version du prompt sans texte en alternative.
+- Toujours en anglais, autonome et descriptif : le générateur d'images n'a PAS accès au contexte de marque, donc décris explicitement palette, style, ambiance, composition d'après la mémoire client.
+- Respecte strictement les règles marquées 🔒 dans la mémoire client (identité visuelle : palette, typographies, éléments obligatoires/interdits).
+- Décris une scène/composition, jamais du texte à intégrer dans l'image (pas de citation, chiffre ou titre à afficher — le modèle de génération d'images rend mal le texte).
+- Jamais de personnage, logo ou marque tiers identifiable.
+- Si plusieurs pièces de contenu sont fournies, choisis celle qui bénéficie le plus d'un visuel et décris l'image pour celle-ci.`;
 
-## Format de sortie attendu (Markdown)
-
-Pour chaque visuel : un titre court (à quelle pièce de contenu il correspond), les formats requis, puis pour chaque outil pertinent le prompt complet prêt à copier-coller avec ses paramètres techniques.
-
-## Règles
-
-- Respecte strictement les règles marquées 🔒 dans la mémoire client (identité visuelle : palette, typographies, éléments obligatoires/interdits) — une violation = à corriger avant de répondre.
-- Jamais de personnage, logo ou marque tiers identifiable dans un prompt.
-- Reste cohérent visuellement entre les visuels : reprends les mêmes descripteurs de style/palette d'un prompt à l'autre.
-- Réponds uniquement avec le livrable au format Markdown ci-dessus, sans préambule ni commentaire hors-sujet.`;
-
-export function buildVisualsPrompt(
+export function buildImageBriefPrompt(
   client: Client,
   brief: Deliverable | null,
-  contentPieces: Deliverable[]
+  contentPiece: Deliverable | null,
+  instruction: string
 ) {
-  const contentBlock =
-    contentPieces.length > 0
-      ? contentPieces
-          .map((d) => deliverableSourceBlock(`Pièce de contenu — "${d.title}"`, d))
-          .join("\n\n")
-      : "### Pièces de contenu\nAucune disponible.";
-
   const user = `${clientContextBlock(client)}
 
 ${deliverableSourceBlock("Brief de campagne le plus récent", brief)}
 
-${contentBlock}
+${deliverableSourceBlock("Pièce de contenu la plus récente", contentPiece)}
 
-Produis le pack de prompts images correspondant à ces pièces de contenu, selon le format défini dans tes instructions.`;
+## Demande
+${instruction || "Crée un visuel pour accompagner la pièce de contenu la plus récente (ou le brief, si aucune pièce de contenu n'est disponible)."}
 
-  return { model: "sonnet" as const, system: SYSTEM_PROMPT, user };
-}
+Réponds avec l'objet JSON défini dans tes instructions, rien d'autre.`;
 
-export function defaultTitle(campagne: string): string {
-  return `Pack visuels — ${campagne || "campagne"}`;
+  return { model: "sonnet" as const, system: BRIEF_SYSTEM_PROMPT, user };
 }

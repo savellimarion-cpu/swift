@@ -5,7 +5,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireClient } from "@/lib/auth";
 import { callClaude, type ClaudeCallOptions } from "@/lib/anthropic";
+import { generateImage, FORMAT_TO_SIZE } from "@/lib/openai";
 import { checkVisualLimit } from "@/lib/limits";
+import { parseImageBrief, serializeImageDeliverable, parseImageDeliverable } from "@/lib/image-deliverable";
 import * as strategiste from "@/lib/agents/strategiste";
 import * as createurContenu from "@/lib/agents/createur-contenu";
 import * as designer from "@/lib/agents/designer";
@@ -40,9 +42,22 @@ async function gatherDeckSources(clientId: string) {
     }),
   ]);
 
-  return [brief, report, ...content, visuals].filter(
+  const sources = [brief, report, ...content, visuals].filter(
     (d): d is NonNullable<typeof d> => d !== null
   );
+
+  // Les livrables "image" du Designer stockent un JSON avec une data URL
+  // (base64, plusieurs centaines de Ko) — on la remplace par un résumé
+  // textuel léger avant de l'inclure dans le prompt du Présentateur.
+  return sources.map((d) => {
+    if (d.agent === "designer" && d.kind === "image") {
+      const img = parseImageDeliverable(d.content);
+      if (img) {
+        return { ...d, content: `Visuel généré (format ${img.format}) — ${img.title}. Description : ${img.prompt}` };
+      }
+    }
+    return d;
+  });
 }
 
 export async function generateDeliverableAction(
@@ -52,6 +67,55 @@ export async function generateDeliverableAction(
   const clientId = String(formData.get("clientId") ?? "");
   const agent = String(formData.get("agent") ?? "");
   const { client } = await requireClient(clientId);
+
+  // Le Designer suit un pipeline à part (brief JSON -> image générée),
+  // différent du pipeline texte générique ci-dessous.
+  if (agent === "designer") {
+    const limitError = await checkVisualLimit(clientId);
+    if (limitError) return { error: limitError };
+
+    const instruction = String(formData.get("instruction") ?? "").trim();
+
+    const [brief, contentPiece] = await Promise.all([
+      prisma.deliverable.findFirst({
+        where: { clientId, agent: "strategiste" },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.deliverable.findFirst({
+        where: { clientId, agent: "createur-contenu" },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
+    let spec;
+    try {
+      const raw = await callClaude(designer.buildImageBriefPrompt(client, brief, contentPiece, instruction));
+      spec = parseImageBrief(raw);
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+
+    let dataUrl: string;
+    try {
+      dataUrl = await generateImage(spec.prompt, FORMAT_TO_SIZE[spec.format] ?? "1024x1024");
+    } catch (err) {
+      return { error: (err as Error).message };
+    }
+
+    const deliverable = await prisma.deliverable.create({
+      data: {
+        clientId: client.id,
+        agent: "designer",
+        kind: "image",
+        title: spec.title,
+        content: serializeImageDeliverable({ ...spec, dataUrl }),
+        status: "brouillon",
+      },
+    });
+
+    revalidatePath(`/dashboard/clients/${client.id}`);
+    redirect(`/dashboard/clients/${client.id}/deliverables/${deliverable.id}`);
+  }
 
   let call: ClaudeCallOptions;
   let title: string;
@@ -77,24 +141,6 @@ export async function generateDeliverableAction(
       call = createurContenu.buildPostPrompt(client, format, brief, angle);
       title = createurContenu.defaultTitle(format, angle);
       kind = format;
-      break;
-    }
-
-    case "designer": {
-      const limitError = await checkVisualLimit(clientId);
-      if (limitError) return { error: limitError };
-
-      const brief = await prisma.deliverable.findFirst({
-        where: { clientId, agent: "strategiste" },
-        orderBy: { createdAt: "desc" },
-      });
-      const contentPieces = await prisma.deliverable.findMany({
-        where: { clientId, agent: "createur-contenu" },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      });
-      call = designer.buildVisualsPrompt(client, brief, contentPieces);
-      title = designer.defaultTitle(brief?.title ?? client.name);
       break;
     }
 

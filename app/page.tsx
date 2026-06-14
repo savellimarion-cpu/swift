@@ -12,7 +12,7 @@ const CLIENT_PITCH: Record<AgentType, string> = {
   "createur-contenu":
     "Rédige vos posts, carrousels, scripts de Reels et emails — dans le ton de votre marque.",
   designer:
-    "Prépare les visuels de vos publications, cohérents avec votre identité graphique.",
+    "Génère directement vos visuels prêts à poster, cohérents avec votre identité graphique.",
   analyste:
     "Lit vos résultats et propose un plan d'action concret pour le mois suivant.",
   presentateur:
