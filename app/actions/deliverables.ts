@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 import { requireClient } from "@/lib/auth";
 import { callClaude, type ClaudeCallOptions } from "@/lib/anthropic";
 import { generateImage, FORMAT_TO_SIZE } from "@/lib/openai";
-import { checkVisualLimit } from "@/lib/limits";
+import { checkCreditLimit } from "@/lib/limits";
 import { parseImageBrief, serializeImageDeliverable, parseImageDeliverable } from "@/lib/image-deliverable";
 import * as strategiste from "@/lib/agents/strategiste";
 import * as createurContenu from "@/lib/agents/createur-contenu";
@@ -68,12 +68,12 @@ export async function generateDeliverableAction(
   const agent = String(formData.get("agent") ?? "");
   const { client } = await requireClient(clientId);
 
+  const creditError = await checkCreditLimit(clientId, client.plan);
+  if (creditError) return { error: creditError };
+
   // Le Designer suit un pipeline à part (brief JSON -> image générée),
   // différent du pipeline texte générique ci-dessous.
   if (agent === "designer") {
-    const limitError = await checkVisualLimit(clientId);
-    if (limitError) return { error: limitError };
-
     const instruction = String(formData.get("instruction") ?? "").trim();
 
     const [brief, contentPiece] = await Promise.all([

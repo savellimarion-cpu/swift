@@ -1,11 +1,5 @@
 import { prisma } from "@/lib/db";
-
-/**
- * Limite mensuelle de visuels générés par Romy (Designer), par client —
- * évite qu'un client ne "bombarde" de demandes. Ajustable entre 30 et 40
- * selon le volume voulu pour une offre donnée.
- */
-export const MONTHLY_VISUAL_LIMIT = 40;
+import { getPlan } from "@/lib/plans";
 
 function startOfMonth(): Date {
   const d = new Date();
@@ -14,21 +8,37 @@ function startOfMonth(): Date {
   return d;
 }
 
-/** Nombre de visuels générés par Romy ce mois-ci pour ce client. */
-export async function visualsGeneratedThisMonth(clientId: string): Promise<number> {
+/**
+ * Nombre de générations (tous agents confondus, 1 livrable = 1 crédit)
+ * effectuées ce mois-ci pour ce client.
+ */
+export async function creditsUsedThisMonth(clientId: string): Promise<number> {
   return prisma.deliverable.count({
-    where: { clientId, agent: "designer", createdAt: { gte: startOfMonth() } },
+    where: { clientId, createdAt: { gte: startOfMonth() } },
   });
 }
 
 /**
- * Retourne un message d'erreur si la limite mensuelle de visuels est
- * atteinte pour ce client, sinon `null`.
+ * Quota de crédits du client, basé sur son offre (`Client.plan`).
+ * `null` si le client n'a pas d'offre assignée (pas de quota — rétro-compatible
+ * avec les clients existants).
  */
-export async function checkVisualLimit(clientId: string): Promise<string | null> {
-  const count = await visualsGeneratedThisMonth(clientId);
-  if (count >= MONTHLY_VISUAL_LIMIT) {
-    return `Limite mensuelle de ${MONTHLY_VISUAL_LIMIT} visuels atteinte pour ce client — elle sera réinitialisée au début du mois prochain.`;
+export function creditLimitFor(plan: string | null): number | null {
+  return getPlan(plan)?.credits ?? null;
+}
+
+/**
+ * Retourne un message d'erreur si le quota mensuel de crédits est atteint
+ * pour ce client, sinon `null`. Si le client n'a pas d'offre assignée,
+ * aucune limite n'est appliquée.
+ */
+export async function checkCreditLimit(clientId: string, plan: string | null): Promise<string | null> {
+  const limit = creditLimitFor(plan);
+  if (limit === null) return null;
+
+  const used = await creditsUsedThisMonth(clientId);
+  if (used >= limit) {
+    return `Quota mensuel de ${limit} crédits atteint pour ce client — il sera réinitialisé au début du mois prochain.`;
   }
   return null;
 }

@@ -1,5 +1,6 @@
+import type { CSSProperties } from "react";
 import type { AgentMeta } from "@/lib/agents";
-import { ACCENT_SOFT_BG, ACCENT_TEXT } from "@/lib/agents";
+import { ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_RING } from "@/lib/agents";
 import { relativeTimeFr } from "@/lib/format";
 
 export default function AgentPersonaPanel({
@@ -16,7 +17,8 @@ export default function AgentPersonaPanel({
   return (
     <div className="w-full md:w-56 shrink-0 md:border-r border-line md:pr-6 mb-6 md:mb-0">
       <div
-        className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${ACCENT_SOFT_BG[agent.accent]}`}
+        className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 animate-ring-pulse ${ACCENT_SOFT_BG[agent.accent]}`}
+        style={{ "--ring-color": ACCENT_RING[agent.accent] } as CSSProperties}
       >
         <Icon size={26} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
       </div>

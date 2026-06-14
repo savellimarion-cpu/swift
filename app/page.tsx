@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, type AgentType } from "@/lib/agents";
+import { ChevronDown } from "lucide-react";
+import { AGENTS, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_BORDER, ACCENT_GLOW, type AgentType } from "@/lib/agents";
+import { PLANS } from "@/lib/plans";
 import Reveal from "@/components/Reveal";
 import AgentIllustration from "@/components/AgentIllustration";
 
@@ -19,6 +21,30 @@ const CLIENT_PITCH: Record<AgentType, string> = {
     "Synthétise le travail du mois dans un compte-rendu clair, prêt à présenter.",
 };
 
+/** Mini-échange illustratif affiché sur chaque carte agent (exemples, pas des retours clients réels). */
+const AGENT_DEMO: Record<AgentType, { prompt: string; reply: string }> = {
+  strategiste: {
+    prompt: "On lance une nouvelle gamme en mars, aide-moi à cadrer la campagne.",
+    reply: "Voici le brief : positionnement, cible prioritaire et 3 angles éditoriaux pour le mois.",
+  },
+  "createur-contenu": {
+    prompt: "Un post LinkedIn pour annoncer notre nouvelle fonctionnalité.",
+    reply: "3 accroches + le post complet (framework AIDA), prêt à publier.",
+  },
+  designer: {
+    prompt: "Un visuel pour la story Instagram de ce post.",
+    reply: "Visuel généré en 9:16, cohérent avec votre palette — prêt à télécharger.",
+  },
+  analyste: {
+    prompt: "Comment se sont comportés nos contenus le mois dernier ?",
+    reply: "Rapport détaillé + un plan d'action concret pour le mois prochain.",
+  },
+  presentateur: {
+    prompt: "Prépare une synthèse du mois pour notre prochain point.",
+    reply: "Deck de 8 slides, structure claire, prêt à présenter.",
+  },
+};
+
 export default function LandingPage() {
   return (
     <div>
@@ -27,6 +53,7 @@ export default function LandingPage() {
       <AgentsSection />
       <HowItWorks />
       <Pricing />
+      <FAQ />
       <Footer />
     </div>
   );
@@ -34,7 +61,7 @@ export default function LandingPage() {
 
 function Header() {
   return (
-    <header className="border-b border-line">
+    <header className="sticky top-0 z-50 border-b border-line bg-paper/75 backdrop-blur-md">
       <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         <span className="font-mono text-sm font-semibold tracking-tight">
           Swiftflow<span className="text-turquoise">.</span>
@@ -60,37 +87,45 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
-      <Reveal>
-        <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-4">
-          {AGENCY_NAME} · agents IA dédiés à votre marque
-        </div>
-        <h1 className="text-3xl md:text-4xl leading-tight mb-5">
-          Une équipe de créateurs IA, prête à travailler pour votre marque.
-        </h1>
-        <p className="text-ink/65 leading-relaxed mb-8 max-w-md">
-          Posts, carrousels, visuels, rapports de performance, présentations
-          — choisissez les agents qui rejoignent votre équipe, donnez-leur
-          vos consignes par chat, et récupérez des contenus prêts à publier.
-          Votre marque, votre ton, votre identité visuelle : tout est déjà
-          configuré par notre équipe.
-        </p>
-        <div className="flex items-center gap-4">
-          <a
-            href="#offres"
-            className="bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 hover:scale-105 transition-all font-medium"
-          >
-            Voir les offres
-          </a>
-          <a href="#agents" className="text-ink/60 hover:text-ink hover:translate-x-0.5 transition-all text-sm inline-block">
-            Découvrir les agents →
-          </a>
-        </div>
-      </Reveal>
+    <section className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div className="animate-drift absolute -top-32 -left-24 w-[28rem] h-[28rem] rounded-full bg-turquoise/20 blur-[90px]" />
+        <div className="animate-drift-slow absolute top-10 right-0 w-[24rem] h-[24rem] rounded-full bg-violet-500/15 blur-[90px]" />
+        <div className="animate-drift absolute bottom-0 left-1/3 w-[20rem] h-[20rem] rounded-full bg-pink-500/10 blur-[90px]" />
+      </div>
 
-      <Reveal delay={150}>
-        <HeroPreview />
-      </Reveal>
+      <div className="max-w-5xl mx-auto px-6 md:px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center">
+        <Reveal>
+          <div className="font-mono text-xs uppercase tracking-widest text-turquoise mb-4">
+            {AGENCY_NAME} · agents IA dédiés à votre marque
+          </div>
+          <h1 className="text-3xl md:text-4xl leading-tight mb-5">
+            Une équipe de créateurs IA, prête à travailler pour votre marque.
+          </h1>
+          <p className="text-ink/65 leading-relaxed mb-8 max-w-md">
+            Posts, carrousels, visuels, rapports de performance, présentations
+            — choisissez les agents qui rejoignent votre équipe, donnez-leur
+            vos consignes par chat, et récupérez des contenus prêts à publier.
+            Votre marque, votre ton, votre identité visuelle : tout est déjà
+            configuré par notre équipe.
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="#offres"
+              className="bg-ink text-paper px-5 py-2.5 rounded-sm hover:bg-ink/85 hover:scale-105 transition-all font-medium"
+            >
+              Voir les offres
+            </a>
+            <a href="#agents" className="text-ink/60 hover:text-ink hover:translate-x-0.5 transition-all text-sm inline-block">
+              Découvrir les agents →
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={150}>
+          <HeroPreview />
+        </Reveal>
+      </div>
     </section>
   );
 }
@@ -153,10 +188,11 @@ function AgentsSection() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {AGENTS.map((agent, i) => {
           const Icon = agent.icon;
+          const demo = AGENT_DEMO[agent.id];
           return (
             <Reveal key={agent.id} delay={i * 80}>
               <div
-                className={`group bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5 hover:-translate-y-1 hover:shadow-sm transition-all`}
+                className={`group bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-5 hover:-translate-y-1 transition-all ${ACCENT_GLOW[agent.accent]}`}
               >
                 <div className={`w-16 h-16 mb-3 ${ACCENT_TEXT[agent.accent]} transition-transform group-hover:scale-105`}>
                   <AgentIllustration agentId={agent.id} />
@@ -170,7 +206,20 @@ function AgentsSection() {
                     {agent.role}
                   </span>
                 </div>
-                <p className="text-sm text-ink/60 leading-relaxed">{CLIENT_PITCH[agent.id]}</p>
+                <p className="text-sm text-ink/60 leading-relaxed mb-4">{CLIENT_PITCH[agent.id]}</p>
+
+                <div className="border-t border-line pt-3 space-y-1.5">
+                  <div className="flex justify-end">
+                    <div className="bg-paper border border-line rounded-sm px-2.5 py-1.5 text-xs text-ink/70 max-w-[88%]">
+                      {demo.prompt}
+                    </div>
+                  </div>
+                  <div className="flex justify-start">
+                    <div className={`${ACCENT_SOFT_BG[agent.accent]} rounded-sm px-2.5 py-1.5 text-xs ${ACCENT_TEXT[agent.accent]} max-w-[88%]`}>
+                      {demo.reply}
+                    </div>
+                  </div>
+                </div>
               </div>
             </Reveal>
           );
@@ -217,49 +266,6 @@ function HowItWorks() {
     </section>
   );
 }
-
-interface Plan {
-  name: string;
-  price: number;
-  subtitle: string;
-  agentIds: AgentType[];
-  extras: string[];
-  result: string;
-  featured?: boolean;
-}
-
-const PLANS: Plan[] = [
-  {
-    name: "Content",
-    price: 79,
-    subtitle: "Pour les entreprises qui savent déjà quoi communiquer.",
-    agentIds: ["createur-contenu", "designer"],
-    extras: [],
-    result: "création de posts, carrousels, emails, visuels.",
-  },
-  {
-    name: "Marketing",
-    price: 149,
-    subtitle: "Pour les entreprises qui veulent aussi une direction.",
-    agentIds: ["strategiste", "createur-contenu", "designer"],
-    extras: [],
-    result: "stratégie + contenu + visuels.",
-    featured: true,
-  },
-  {
-    name: "Équipe Complète",
-    price: 249,
-    subtitle: "Le département marketing complet.",
-    agentIds: ["strategiste", "createur-contenu", "designer", "analyste", "presentateur"],
-    extras: [
-      "Rapports mensuels",
-      "Analyse des performances",
-      "Plan d'action mensuel",
-      "Présentations synthétiques",
-    ],
-    result: "une équipe marketing IA complète.",
-  },
-];
 
 function Pricing() {
   return (
@@ -319,6 +325,7 @@ function Pricing() {
                   })}
                   <li>• Conversations illimitées</li>
                   <li>• Mémoire de marque</li>
+                  <li>• {plan.credits} crédits de génération / mois</li>
                   {plan.extras.map((extra) => (
                     <li key={extra}>• {extra}</li>
                   ))}
@@ -352,6 +359,59 @@ function Pricing() {
         </a>
         .
       </p>
+    </section>
+  );
+}
+
+const FAQ_ITEMS = [
+  {
+    q: "Comment se passe la mise en place ?",
+    a: "Votre agence configure la mémoire de marque de chaque agent (ton, vocabulaire, identité visuelle, cible) avant de vous donner accès à votre espace — vous n'avez rien à paramétrer.",
+  },
+  {
+    q: "Puis-je changer d'offre à tout moment ?",
+    a: "Oui — écrivez-nous et nous ajustons votre offre, votre quota de crédits et les agents disponibles dans votre espace dès le mois suivant.",
+  },
+  {
+    q: "Que se passe-t-il si j'atteins mon quota de crédits ?",
+    a: "Chaque génération (post, visuel, rapport, deck...) consomme 1 crédit. Une fois le quota mensuel atteint, l'agent vous l'indique directement dans le chat — le quota se réinitialise au début du mois suivant.",
+  },
+  {
+    q: "Les agents connaissent-ils déjà ma marque ?",
+    a: "Oui : ton, vocabulaire, identité visuelle et profil de cible sont configurés en amont par votre agence et pris en compte à chaque génération.",
+  },
+  {
+    q: "Puis-je demander des retouches sur un livrable ?",
+    a: "Bien sûr — décrivez ce que vous voulez ajuster directement dans le chat de l'agent concerné, comme pour toute autre demande.",
+  },
+];
+
+function FAQ() {
+  return (
+    <section className="max-w-5xl mx-auto px-6 md:px-10 py-16 border-t border-line">
+      <Reveal>
+        <h2 className="font-mono text-xs uppercase tracking-widest text-ink/40 mb-2">FAQ</h2>
+        <h3 className="text-2xl mb-8 max-w-lg">Les questions fréquentes.</h3>
+      </Reveal>
+      <div className="max-w-2xl space-y-2">
+        {FAQ_ITEMS.map((item, i) => (
+          <Reveal key={item.q} delay={i * 60}>
+            <details className="group bg-white border border-line rounded-sm px-4 py-3">
+              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none text-sm font-medium text-ink">
+                {item.q}
+                <ChevronDown
+                  size={16}
+                  className="text-ink/40 shrink-0 transition-transform group-open:rotate-180"
+                  aria-hidden="true"
+                />
+              </summary>
+              <p className="text-sm text-ink/60 leading-relaxed mt-3 pt-3 border-t border-line">
+                {item.a}
+              </p>
+            </details>
+          </Reveal>
+        ))}
+      </div>
     </section>
   );
 }

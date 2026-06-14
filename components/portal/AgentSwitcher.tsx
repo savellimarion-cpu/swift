@@ -23,9 +23,9 @@ export default function AgentSwitcher({
           <Link
             key={agent.id}
             href={`/portal/${token}/agents/${agent.id}/chat`}
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm text-sm whitespace-nowrap transition-colors ${
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm text-sm whitespace-nowrap transition-all duration-200 ${
               active
-                ? `${ACCENT_SOFT_BG[agent.accent]} ${ACCENT_TEXT[agent.accent]} font-medium`
+                ? `${ACCENT_SOFT_BG[agent.accent]} ${ACCENT_TEXT[agent.accent]} font-medium scale-[1.03]`
                 : "text-ink/50 hover:text-ink hover:bg-paper"
             }`}
           >

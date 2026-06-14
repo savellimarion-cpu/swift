@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getAgentMeta } from "@/lib/agents";
-import { MONTHLY_VISUAL_LIMIT, visualsGeneratedThisMonth } from "@/lib/limits";
+import { creditsUsedThisMonth, creditLimitFor } from "@/lib/limits";
 import ChatTab from "@/components/portal/ChatTab";
 import OutputTab from "@/components/portal/OutputTab";
 import AnalyticsTab from "@/components/portal/AnalyticsTab";
@@ -22,13 +22,8 @@ export default async function AgentWorkspaceTabPage({
   if (!client) notFound();
 
   if (tab === "chat") {
-    const quota =
-      agent.id === "designer"
-        ? {
-            used: await visualsGeneratedThisMonth(client.id),
-            limit: MONTHLY_VISUAL_LIMIT,
-          }
-        : undefined;
+    const limit = creditLimitFor(client.plan);
+    const quota = limit !== null ? { used: await creditsUsedThisMonth(client.id), limit } : undefined;
     return <ChatTab token={token} agentId={agent.id} quota={quota} />;
   }
 

@@ -8,7 +8,7 @@ import { parseImageBrief, serializeImageDeliverable } from "@/lib/image-delivera
 import * as designer from "@/lib/agents/designer";
 import { buildChatPrompt, chatDefaultTitle } from "@/lib/agents/chat";
 import { getAgentMeta, enabledAgentIds, type AgentType } from "@/lib/agents";
-import { checkVisualLimit } from "@/lib/limits";
+import { checkCreditLimit } from "@/lib/limits";
 
 export interface PortalChatState {
   error?: string;
@@ -41,10 +41,10 @@ export async function sendAgentMessageAction(
     return { error: "Cet agent n'est pas activé pour votre espace." };
   }
 
-  if (agentId === "designer") {
-    const limitError = await checkVisualLimit(client.id);
-    if (limitError) return { error: limitError };
+  const creditError = await checkCreditLimit(client.id, client.plan);
+  if (creditError) return { error: creditError };
 
+  if (agentId === "designer") {
     const [brief, contentPiece] = await Promise.all([
       prisma.deliverable.findFirst({
         where: { clientId: client.id, agent: "strategiste" },

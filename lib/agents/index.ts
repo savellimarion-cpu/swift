@@ -216,3 +216,21 @@ export const ACCENT_SOFT_BG: Record<AgentMeta["accent"], string> = {
   blue: "bg-blue-500/10",
   amber: "bg-amber-600/10",
 };
+
+/** Ombre colorée au survol (cartes agents) — glow subtil dans la couleur de l'agent. */
+export const ACCENT_GLOW: Record<AgentMeta["accent"], string> = {
+  turquoise: "hover:shadow-[0_16px_40px_-20px_rgba(0,169,155,0.45)]",
+  violet: "hover:shadow-[0_16px_40px_-20px_rgba(139,92,246,0.45)]",
+  pink: "hover:shadow-[0_16px_40px_-20px_rgba(236,72,153,0.45)]",
+  blue: "hover:shadow-[0_16px_40px_-20px_rgba(59,130,246,0.45)]",
+  amber: "hover:shadow-[0_16px_40px_-20px_rgba(217,119,6,0.45)]",
+};
+
+/** Anneau animé (avatar du portail) — couleur de fond utilisée pour l'effet de pulsation. */
+export const ACCENT_RING: Record<AgentMeta["accent"], string> = {
+  turquoise: "rgba(0,169,155,0.35)",
+  violet: "rgba(139,92,246,0.35)",
+  pink: "rgba(236,72,153,0.35)",
+  blue: "rgba(59,130,246,0.35)",
+  amber: "rgba(217,119,6,0.35)",
+};

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { enabledAgentsMeta, ACCENT_SOFT_BG, ACCENT_TEXT } from "@/lib/agents";
+import { enabledAgentsMeta, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_GLOW } from "@/lib/agents";
 import { relativeTimeFr } from "@/lib/format";
+import AmbientBlobs from "@/components/AmbientBlobs";
 
 export default async function PortalHubPage({
   params,
@@ -29,7 +30,8 @@ export default async function PortalHubPage({
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-line">
+      <AmbientBlobs />
+      <header className="sticky top-0 z-40 border-b border-line bg-paper/75 backdrop-blur-md">
         <div className="max-w-4xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <span className="font-mono text-sm font-semibold tracking-tight">
             Swiftflow<span className="text-turquoise">.</span>
@@ -62,7 +64,7 @@ export default async function PortalHubPage({
                 <Link
                   key={agent.id}
                   href={`/portal/${token}/agents/${agent.id}/chat`}
-                  className="block bg-white border border-line rounded-sm p-5 hover:shadow-sm hover:-translate-y-0.5 transition-all"
+                  className={`block bg-white border border-line rounded-sm p-5 hover:-translate-y-0.5 transition-all ${ACCENT_GLOW[agent.accent]}`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${ACCENT_SOFT_BG[agent.accent]}`}>

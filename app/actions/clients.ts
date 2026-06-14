@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { requireUser, requireClient, generateToken } from "@/lib/auth";
 import { slugify } from "@/lib/slug";
 import { AGENTS, serializeEnabledAgents } from "@/lib/agents";
+import { getPlan } from "@/lib/plans";
 
 export interface ClientFormState {
   error?: string;
@@ -85,6 +86,30 @@ export async function revokePortalTokenAction(formData: FormData): Promise<void>
   const clientId = String(formData.get("clientId") ?? "");
   const { client } = await requireClient(clientId);
   await prisma.client.update({ where: { id: client.id }, data: { portalToken: null } });
+  revalidatePath(`/dashboard/clients/${client.id}`);
+}
+
+/**
+ * Assigne une offre (Content / Marketing / Équipe Complète / aucune) à ce
+ * client — détermine son quota de crédits mensuel (lib/plans.ts) et
+ * pré-remplit ses agents activés en conséquence. Les agents peuvent ensuite
+ * être ajustés finement via updateEnabledAgentsAction ci-dessous.
+ */
+export async function updatePlanAction(formData: FormData): Promise<void> {
+  const clientId = String(formData.get("clientId") ?? "");
+  const { client } = await requireClient(clientId);
+
+  const planId = String(formData.get("plan") ?? "");
+  const plan = getPlan(planId);
+
+  await prisma.client.update({
+    where: { id: client.id },
+    data: {
+      plan: plan?.id ?? null,
+      ...(plan ? { enabledAgents: serializeEnabledAgents(plan.agentIds) } : {}),
+    },
+  });
+
   revalidatePath(`/dashboard/clients/${client.id}`);
 }
 

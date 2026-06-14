@@ -79,6 +79,10 @@ model Client {
   // null ou vide = tous les agents activés (valeur par défaut, rétro-compatible).
   enabledAgents String?
 
+  // --- Offre souscrite (voir lib/plans.ts) ---
+  // "content" | "marketing" | "equipe-complete" | null (null = pas de quota de crédits)
+  plan String?
+
   deliverables Deliverable[]
 
   @@unique([accountId, slug])

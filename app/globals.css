@@ -48,9 +48,28 @@ body {
   animation: softPulse 2.2s ease-in-out infinite;
 }
 
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4%, -6%) scale(1.08); }
+}
+.animate-drift {
+  animation: drift 22s ease-in-out infinite;
+}
+.animate-drift-slow {
+  animation: drift 32s ease-in-out infinite reverse;
+}
+
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--ring-color); }
+  50% { box-shadow: 0 0 0 6px var(--ring-color); }
+}
+.animate-ring-pulse {
+  animation: ringPulse 2.6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; animation: none; }
-  .animate-float, .animate-soft-pulse { animation: none; }
+  .animate-float, .animate-soft-pulse, .animate-drift, .animate-drift-slow, .animate-ring-pulse { animation: none; }
 }
 
 /* --- Rendu markdown des livrables ----------------------------------- */

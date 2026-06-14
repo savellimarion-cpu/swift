@@ -1,9 +1,10 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useActionState, useState } from "react";
 import { Sparkles, Send } from "lucide-react";
 import { sendAgentMessageAction, type PortalChatState } from "@/app/actions/portal";
-import { ACCENT_SOFT_BG, ACCENT_TEXT, getAgentMeta, type AgentType } from "@/lib/agents";
+import { ACCENT_BG, ACCENT_SOFT_BG, ACCENT_TEXT, ACCENT_RING, getAgentMeta, type AgentType } from "@/lib/agents";
 import SubmitButton from "@/components/SubmitButton";
 
 const initialState: PortalChatState = {};
@@ -29,22 +30,37 @@ export default function ChatTab({
     <div>
       {quota && (
         <div
-          className={`mb-4 flex items-center justify-between rounded-sm border px-3 py-2 text-xs font-mono ${
-            quotaReached
-              ? "border-clay/40 bg-clay/10 text-clay"
-              : "border-line bg-white text-ink/50"
+          className={`mb-4 rounded-sm border p-3 text-xs font-mono ${
+            quotaReached ? "border-clay/40 bg-clay/5" : "border-line bg-white"
           }`}
         >
-          <span>
-            {quotaReached
-              ? `Limite mensuelle atteinte (${quota.limit} visuels) — réinitialisation au début du mois prochain.`
-              : `Visuels ce mois-ci : ${quota.used} / ${quota.limit}`}
-          </span>
+          <div className="flex items-center justify-between mb-1.5">
+            <span className={quotaReached ? "text-clay" : "text-ink/50"}>
+              {quotaReached ? "Quota mensuel atteint" : "Crédits ce mois-ci"}
+            </span>
+            <span className={quotaReached ? "text-clay" : "text-ink/40"}>
+              {quota.used} / {quota.limit}
+            </span>
+          </div>
+          <div className="h-1.5 rounded-full bg-line overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-[width] duration-700 ease-out ${
+                quotaReached ? "bg-clay" : ACCENT_BG[agent.accent]
+              }`}
+              style={{ width: `${Math.min(100, (quota.used / quota.limit) * 100)}%` }}
+            />
+          </div>
+          {quotaReached && (
+            <p className="mt-1.5 text-clay">Réinitialisation au début du mois prochain.</p>
+          )}
         </div>
       )}
 
       <div className="bg-white border border-line rounded-sm p-8 mb-4 flex flex-col items-center text-center">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 ${ACCENT_SOFT_BG[agent.accent]}`}>
+        <div
+          className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 animate-ring-pulse ${ACCENT_SOFT_BG[agent.accent]}`}
+          style={{ "--ring-color": ACCENT_RING[agent.accent] } as CSSProperties}
+        >
           <Sparkles size={22} className={ACCENT_TEXT[agent.accent]} aria-hidden="true" />
         </div>
         <h2 className="text-base font-semibold text-ink mb-2">Démarrer une conversation</h2>

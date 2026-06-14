@@ -5,6 +5,7 @@ import { getAgentMeta, enabledAgentIds } from "@/lib/agents";
 import AgentPersonaPanel from "@/components/portal/AgentPersonaPanel";
 import AgentTabNav from "@/components/portal/AgentTabNav";
 import AgentSwitcher from "@/components/portal/AgentSwitcher";
+import AmbientBlobs from "@/components/AmbientBlobs";
 
 export default async function AgentWorkspaceLayout({
   children,
@@ -36,7 +37,8 @@ export default async function AgentWorkspaceLayout({
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-line no-print">
+      <AmbientBlobs />
+      <header className="sticky top-0 z-40 border-b border-line bg-paper/75 backdrop-blur-md no-print">
         <div className="max-w-5xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <span className="font-mono text-sm font-semibold tracking-tight">
             Swiftflow<span className="text-turquoise">.</span>

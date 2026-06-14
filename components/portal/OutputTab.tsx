@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Deliverable } from "@prisma/client";
 import { excerpt } from "@/lib/format";
 import { parseImageDeliverable } from "@/lib/image-deliverable";
-import { ACCENT_BORDER, type AgentMeta } from "@/lib/agents";
+import { ACCENT_BORDER, ACCENT_GLOW, type AgentMeta } from "@/lib/agents";
 
 export default function OutputTab({
   token,
@@ -30,7 +30,7 @@ export default function OutputTab({
           <Link
             key={d.id}
             href={`/portal/${token}/${d.id}`}
-            className={`block bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-4 hover:shadow-sm hover:-translate-y-0.5 transition-all`}
+            className={`block bg-white border border-line ${ACCENT_BORDER[agent.accent]} border-l-[3px] rounded-sm p-4 hover:-translate-y-0.5 transition-all ${ACCENT_GLOW[agent.accent]}`}
           >
             {image && (
               // eslint-disable-next-line @next/next/no-img-element
