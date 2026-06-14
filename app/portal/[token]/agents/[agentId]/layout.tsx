@@ -49,7 +49,7 @@ export default async function AgentWorkspaceLayout({
           lastActivity={latest?.createdAt ?? null}
         />
         <div className="flex-1 min-w-0">
-          <AgentTabNav token={token} agent={agent} />
+          <AgentTabNav token={token} agentId={agent.id} />
           {children}
         </div>
       </div>

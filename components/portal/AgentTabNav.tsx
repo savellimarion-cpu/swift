@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { AgentMeta } from "@/lib/agents";
-import { workspaceTabs, ACCENT_BORDER, ACCENT_TEXT } from "@/lib/agents";
+import { getAgentMeta, workspaceTabs, ACCENT_BORDER, ACCENT_TEXT, type AgentType } from "@/lib/agents";
 
 export default function AgentTabNav({
   token,
-  agent,
+  agentId,
 }: {
   token: string;
-  agent: AgentMeta;
+  agentId: AgentType;
 }) {
   const pathname = usePathname();
+  const agent = getAgentMeta(agentId);
+  if (!agent) return null;
   const tabs = workspaceTabs(agent);
 
   return (

@@ -18,7 +18,7 @@ export default async function AgentWorkspaceTabPage({
   if (!agent) notFound();
 
   if (tab === "chat") {
-    return <ChatTab token={token} agent={agent} />;
+    return <ChatTab token={token} agentId={agent.id} />;
   }
 
   const client = await prisma.client.findUnique({ where: { portalToken: token } });

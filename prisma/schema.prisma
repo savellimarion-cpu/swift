@@ -8,7 +8,13 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // "native" = la plateforme où `prisma generate` tourne (le build Vercel) ;
+  // "rhel-openssl-3.0.x" = le runtime des fonctions serverless Vercel au
+  // moment de l'exécution. Sans cette deuxième cible, Prisma ne trouve pas
+  // le moteur de requêtes en production -> erreur sur TOUTES les pages qui
+  // touchent la base (PrismaClientInitializationError).
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 /// Une "Account" = une agence/freelance qui utilise la plateforme (le tenant).

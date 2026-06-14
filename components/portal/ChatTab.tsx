@@ -3,14 +3,17 @@
 import { useActionState, useState } from "react";
 import { Sparkles, Send } from "lucide-react";
 import { sendAgentMessageAction, type PortalChatState } from "@/app/actions/portal";
-import { ACCENT_SOFT_BG, ACCENT_TEXT, type AgentMeta } from "@/lib/agents";
+import { ACCENT_SOFT_BG, ACCENT_TEXT, getAgentMeta, type AgentType } from "@/lib/agents";
 import SubmitButton from "@/components/SubmitButton";
 
 const initialState: PortalChatState = {};
 
-export default function ChatTab({ token, agent }: { token: string; agent: AgentMeta }) {
+export default function ChatTab({ token, agentId }: { token: string; agentId: AgentType }) {
+  const agent = getAgentMeta(agentId);
   const [state, formAction] = useActionState(sendAgentMessageAction, initialState);
   const [message, setMessage] = useState("");
+
+  if (!agent) return null;
 
   return (
     <div>
