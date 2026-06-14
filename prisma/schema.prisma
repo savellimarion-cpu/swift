@@ -1,0 +1,90 @@
+// Schéma de données — provider Postgres (voir README section "Déploiement" :
+// une base Postgres gratuite, ex. Neon, fonctionne aussi bien en local
+// qu'en production — DATABASE_URL pointe simplement vers la même base).
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+/// Une "Account" = une agence/freelance qui utilise la plateforme (le tenant).
+model Account {
+  id        String    @id @default(cuid())
+  name      String
+  createdAt DateTime  @default(now())
+  users     User[]
+  clients   Client[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  accountId    String
+  account      Account  @relation(fields: [accountId], references: [id])
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("owner") // owner | member
+  createdAt    DateTime @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+/// Un client marketing géré par l'Account — équivalent de clients/{client}/
+/// dans la version Claude Code (brand.md / icp.md / historique.md), mais en
+/// base et modifiable via formulaire.
+model Client {
+  id        String   @id @default(cuid())
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  name      String
+  slug      String
+  createdAt DateTime @default(now())
+
+  // --- Mémoire de marque (brand.md) ---
+  brandTone      String? // tutoiement/vouvoiement, registre, adjectifs
+  brandForbidden String? // mots/expressions interdits
+  brandPreferred String? // mots/expressions à privilégier
+  brandVisual    String? // palette, typographies, éléments obligatoires/interdits
+
+  // --- ICP (icp.md) ---
+  icpProfile     String? // qui, job to be done
+  icpPains       String? // douleurs
+  icpObjections  String? // objections fréquentes
+
+  // --- Historique (historique.md) ---
+  historique     String? // campagnes passées, baseline, préférences client
+
+  // --- Portail client (lecture seule, sans compte) ---
+  portalToken String? @unique
+
+  deliverables Deliverable[]
+
+  @@unique([accountId, slug])
+}
+
+/// Un livrable produit par un agent — équivalent d'un fichier markdown avec
+/// frontmatter dans la version Claude Code.
+model Deliverable {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  agent     String   // strategiste | createur-contenu | designer | analyste | presentateur
+  kind      String?  // précision : format (createur-contenu), structure (presentateur), periode (analyste)...
+  title     String
+  content   String   // markdown
+  status    String   @default("brouillon") // brouillon | validé | publié
+
+  createdAt DateTime @default(now())
+}
